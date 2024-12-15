@@ -13,7 +13,7 @@ import logo from "@/assets/profile-pic.jpg";
 import useSendMessage from "./context/useSendMessage.ts";
 import axios from "axios";
 import { UserProfileCard } from "./user-profile.tsx";
-
+import useTyping from "./context/useTyping.tsx";
 interface ChatAreaProps {
   selectedUser: {
     id: string;
@@ -32,6 +32,8 @@ export default function ChatArea({ selectedUser }: ChatAreaProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showProfile, setShowProfile] = useState(false);
+  const [isListening, setIsListening] = useState(false);
+  // const handleTyping = useTyping(selectedUser);
 
   const handleSendMessage = useCallback(
     async (e: any) => {
@@ -48,6 +50,32 @@ export default function ChatArea({ selectedUser }: ChatAreaProps) {
   const toggleProfile = () => {
     setShowProfile(!showProfile);
   };
+
+  const handleSpeechRecognition = useCallback(
+    async () => {
+      const recognition = new (window as any).webkitSpeechRecognition();
+      recognition.lang = "en-US";
+
+      recognition.onstart = function() {
+        setIsListening(true);
+      }
+
+      recognition.onresult = function (e:any) {
+        const transcript = e.results[0][0].transcript;
+        if(selectedUser) {
+          setMessage(transcript);
+        }
+      }
+
+      recognition.onend = function() {
+        setIsListening(false);
+        recognition.stop();
+      }
+
+      recognition.start();
+
+    },[message,selectedUser, sendMessage]
+  );
 
   useEffect(() => {
     if (!selectedUser) return;
@@ -86,7 +114,7 @@ export default function ChatArea({ selectedUser }: ChatAreaProps) {
   return (
     <div className="flex-1 flex">
       {/* Profile Card */}
-      <div className={`transition-all duration-300 ${showProfile ? "w-1/5":"w-0"} bg-white shadow-lg overflow-hidden flex`}>
+      <div className={`transition-all duration-300 ${showProfile ? "w-1/5" : "w-0"} bg-white shadow-lg overflow-hidden flex`}>
         {showProfile && userData && (
           <UserProfileCard />
         )}
@@ -148,7 +176,12 @@ export default function ChatArea({ selectedUser }: ChatAreaProps) {
             placeholder="Type a message"
             className="flex-1 p-2 rounded-full bg-white focus:outline-none focus:ring-2 focus:ring-green-500"
             value={message}
-            onChange={(e) => setMessage(e.target.value)}
+            onChange={
+              (e) => {
+                setMessage(e.target.value);
+                // handleTyping(e);
+              }
+            }
             onKeyDown={(e) => {
               if (e.key === "Enter") {
                 handleSendMessage(e);
@@ -163,11 +196,12 @@ export default function ChatArea({ selectedUser }: ChatAreaProps) {
               <Send className="h-6 w-6" />
             </button>
           ) : (
-            <button className="text-gray-600 hover:text-gray-900">
-              <Mic className="h-6 w-6" />
+            <button onClick={handleSpeechRecognition} className="text-gray-600 hover:text-gray-900">
+              <Mic className={`h-6 w-6 ${isListening ? "animate-pulse":""}`} />
             </button>
           )}
         </div>
+        {/* {handleTyping && <p className="text-gray-500 text-sm">User is typing...</p>} */}
       </div>
     </div>
   );

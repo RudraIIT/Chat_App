@@ -35,6 +35,7 @@ export const sendMessage = asyncHandler(async (req, res) => {
         if (receiverSocket) {
             // console.log("Emitting new message to receiver");
             io.to(receiverSocket).emit("newMessage", newMessage);
+            io.to(receiverSocket).emit("typing", senderId);
         }
 
         res.status(200).json({
@@ -83,6 +84,29 @@ export const getMessage = asyncHandler(async (req, res) => {
             message: error.message,
         });
     }
+});
+
+export const getLastMessage = asyncHandler(async (req, res) => {
+    const currentUserId = req.user._id;
+    const receiverId = req.params.id;
+
+    const conversation = await Conversation.findOne({
+        members: { $all: [currentUserId, receiverId] },
+    }).populate("messages");
+
+    if (!conversation) {
+        return res.status(200).json([]);
+    }
+
+    const messages = conversation.messages;
+
+    if (messages.length === 0) {
+        return res.status(200).json([]);
+    }
+
+    const lastMessage = messages[messages.length - 1];
+
+    res.status(200).json(lastMessage);
 });
 
 

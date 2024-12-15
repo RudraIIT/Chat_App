@@ -14,7 +14,7 @@ const io = new Server(server, {
         methods: ["GET", "POST"],
         credentials: true,
     },
-    adapter: createAdapter(redis),
+    // adapter: createAdapter(redis),
 });
 
 export const getReceiverSocket = (receiverId) => {
