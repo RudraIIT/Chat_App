@@ -3,6 +3,7 @@ import Conversation from "../models/conversationModel.js";
 import mongoose from "mongoose";
 import Message from "../models/messageModel.js";
 import asyncHandler from "../utils/asyncHandler.js";
+import { generateRoomId } from "../utils/generateRoom.js";
 
 export const sendMessage = asyncHandler(async (req, res) => {
     try {
@@ -25,18 +26,18 @@ export const sendMessage = asyncHandler(async (req, res) => {
             message: message,
         });
 
-        if (newMessage) {
-            conversation.messages.push(newMessage._id);
-        }
-
-        await Promise.all([conversation.save(), newMessage.save()]);
         const receiverSocket = getReceiverSocket(receiverId);
 
         if (receiverSocket) {
             // console.log("Emitting new message to receiver");
             io.to(receiverSocket).emit("newMessage", newMessage);
-            io.to(receiverSocket).emit("typing", senderId);
         }
+
+        if (newMessage) {
+            conversation.messages.push(newMessage._id);
+        }
+
+        await Promise.all([conversation.save(), newMessage.save()]);
 
         res.status(200).json({
             success: true,
@@ -107,6 +108,57 @@ export const getLastMessage = asyncHandler(async (req, res) => {
     const lastMessage = messages[messages.length - 1];
 
     res.status(200).json(lastMessage);
+});
+
+export const initiateVideoCall = asyncHandler(async (req, res) => {
+    const { id: receiverId } = req.params;
+    const senderId = req.user._id;
+    const receiverSocket = getReceiverSocket(receiverId);
+
+    if (receiverSocket) {
+        io.to(receiverSocket).emit("videoCall", {
+            senderId,
+            message: "Incoming video call...",
+            roomId: generateRoomId(),  
+        });
+    }
+
+    res.status(200).json({
+        success: true,
+        message: "Video call initiated.",
+    });
+});
+
+export const acceptVideoCall = asyncHandler(async (req, res) => {
+    const { roomId, senderId } = req.body; 
+    const receiverId = req.user._id;
+    const senderSocket = getReceiverSocket(senderId);
+    const receiverSocket = getReceiverSocket(receiverId);
+
+    if (senderSocket && receiverSocket) {
+        io.to(senderSocket).emit("callAccepted", { roomId, receiverId });
+        io.to(receiverSocket).emit("callAccepted", { roomId, senderId });
+    }
+
+    res.status(200).json({
+        success: true,
+        message: "Video call accepted.",
+    });
+});
+
+export const rejectVideoCall = asyncHandler(async (req, res) => {
+    const { senderId } = req.body;
+    const receiverId = req.user._id;
+    const senderSocket = getReceiverSocket(senderId);
+
+    if (senderSocket) {
+        io.to(senderSocket).emit("callRejected", { receiverId });
+    }
+
+    res.status(200).json({
+        success: true,
+        message: "Video call rejected.",
+    });
 });
 
 

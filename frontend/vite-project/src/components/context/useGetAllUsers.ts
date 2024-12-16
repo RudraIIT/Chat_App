@@ -7,8 +7,8 @@ function useGetAllUsers() {
     const [loading, setLoading] = useState(false);
     const userId = Cookies.get('user');
     const token = Cookies.get('token');
-    console.log("User ID:",userId);
-    console.log("Token:",token);
+    // console.log("User ID:",userId);
+    // console.log("Token:",token);
     useEffect(() => {
         const getUsers = async () => {
             setLoading(true);

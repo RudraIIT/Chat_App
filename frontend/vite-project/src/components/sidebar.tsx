@@ -1,10 +1,11 @@
-import { Search, LogOut, Bell } from 'lucide-react';
+import { Search, LogOut, Bell, User } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import ChatList from './chat-list';
 import logo from '@/assets/profile-pic.jpg';
 import { handleLogout, useAuth } from './context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { NotificationCard } from './notification-card';
+import { UserCard } from './user-card';
 
 interface SidebarProps {
   onSelectUser: (userId: string) => void;
@@ -14,10 +15,12 @@ export default function Sidebar({ onSelectUser }: SidebarProps) {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
-  const [notificationCount, setNotificationCount] = useState<number>(2);
+  const [notificationCount, setNotificationCount] = useState<number>(0);
   const [showNotification, setShowNotification] = useState<boolean>(false);
+  const [showProfile, setShowProfile] = useState<boolean>(false);
   const { setUser } = useAuth();
   const notificationRef = useRef<HTMLDivElement | null>(null);
+  const userRef = useRef<HTMLDivElement | null>(null);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
@@ -39,7 +42,17 @@ export default function Sidebar({ onSelectUser }: SidebarProps) {
 
   const handleBellClick = () => {
     setNotificationCount(0);
+    if(!showNotification) {
+      setShowProfile(false);
+    }
     setShowNotification(!showNotification);
+  }
+
+  const handleUserProfile = () => {
+    if(!showProfile) {
+      setShowNotification(false);
+    }
+    setShowProfile(!showProfile);
   }
 
   useEffect(() => {
@@ -48,10 +61,18 @@ export default function Sidebar({ onSelectUser }: SidebarProps) {
     }
   },[showNotification]);
 
+  useEffect(() => {
+    if(showProfile && userRef.current) {
+      userRef.current.classList.add("animate-slideDown");
+    }
+  },[showProfile]);
+
   return (
     <div className="w-full sm:w-80 flex-shrink-0 border-r border-gray-300 bg-white">
       <div className="h-16 flex items-center justify-between px-4 bg-gray-200">
-        <img src={logo} alt="Profile" className="w-10 h-10 rounded-full" />
+        <button onClick={handleUserProfile} className='hover:bg-gray-300 rounded-full p-1'>
+          <img src={logo} alt="Profile" className="w-10 h-10 rounded-full" />
+        </button>
         <div className="flex space-x-4">
           <button className="relative" onClick={handleBellClick}>
             <Bell className="h-6 w-6 text-gray-600 hover:text-gray-900" />
@@ -88,6 +109,17 @@ export default function Sidebar({ onSelectUser }: SidebarProps) {
           <NotificationCard />
         </div>
       )
+      }
+
+      {
+        showProfile && (
+          <div
+            ref={userRef}
+            className="bg-white transform transition-transform duration-500 ease-in-out"
+          >
+            <UserCard />
+          </div>
+        )
       }
 
       {/* Pass the `onSelectUser` callback to the `ChatList` */}
