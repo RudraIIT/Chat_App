@@ -6,6 +6,8 @@ import { handleLogout, useAuth } from './context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { NotificationCard } from './notification-card';
 import { UserCard } from './user-card';
+import useGetNotifications from './context/useGetNotifications';
+import axios from 'axios';
 
 interface SidebarProps {
   onSelectUser: (userId: string) => void;
@@ -15,12 +17,35 @@ export default function Sidebar({ onSelectUser }: SidebarProps) {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
-  const [notificationCount, setNotificationCount] = useState<number>(0);
+  const [notification, setNotification] = useState([]);
+  useGetNotifications(setNotification);
+  const [notificationCount, setNotificationCount] = useState<number>(notification.length);
   const [showNotification, setShowNotification] = useState<boolean>(false);
   const [showProfile, setShowProfile] = useState<boolean>(false);
   const { setUser } = useAuth();
   const notificationRef = useRef<HTMLDivElement | null>(null);
   const userRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    // console.log("Notification:", notification);
+    setNotificationCount(notification.length);
+  }, [notification])
+
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      try {
+        const response = await axios.get("http://localhost:3000/api/users/getRequest", {
+          withCredentials: true,
+        });
+
+        setNotification(response.data.friendRequests || []);
+      } catch (error) {
+        console.error("Error fetching notifications:", error);
+      }
+    };
+
+    fetchNotifications();
+  }, []);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
@@ -42,30 +67,30 @@ export default function Sidebar({ onSelectUser }: SidebarProps) {
 
   const handleBellClick = () => {
     setNotificationCount(0);
-    if(!showNotification) {
+    if (!showNotification) {
       setShowProfile(false);
     }
     setShowNotification(!showNotification);
   }
 
   const handleUserProfile = () => {
-    if(!showProfile) {
+    if (!showProfile) {
       setShowNotification(false);
     }
     setShowProfile(!showProfile);
   }
 
   useEffect(() => {
-    if(showNotification && notificationRef.current) {
+    if (showNotification && notificationRef.current) {
       notificationRef.current.classList.add("animate-slideDown");
     }
-  },[showNotification]);
+  }, [showNotification]);
 
   useEffect(() => {
-    if(showProfile && userRef.current) {
+    if (showProfile && userRef.current) {
       userRef.current.classList.add("animate-slideDown");
     }
-  },[showProfile]);
+  }, [showProfile]);
 
   return (
     <div className="w-full sm:w-80 flex-shrink-0 border-r border-gray-300 bg-white">

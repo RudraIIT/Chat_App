@@ -1,4 +1,4 @@
-/* Ensure no scrollbars globally */
+
 html,
 body {
     margin: 0;
@@ -8,12 +8,11 @@ body {
     height: 100%;
 }
 
-/* Optional: If there's a specific container causing the issue */
 ::-webkit-scrollbar {
     display: none;
 }
 
 html {
-    scrollbar-width: none; /* Hides scrollbar */
+    scrollbar-width: none; 
 }
   

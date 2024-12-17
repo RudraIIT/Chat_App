@@ -43,8 +43,38 @@ export default function ChatArea({ selectedUser }: ChatAreaProps) {
   const [isTyping, setIsTyping] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const emojiPickerRef = useRef<HTMLDivElement | null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
   const { startCall, endCall, localStream, remoteStream, isInCall, answerCall } = useVideoCall();
   const { socket } = useSocketContext();
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setSelectedFile(file);
+    }
+  };
+
+  const handleSendFile = async () => {
+    if (selectedFile && selectedUser) {
+      const formData = new FormData();
+      formData.append("file", selectedFile);
+      formData.append("receiverId", selectedUser.id);
+      try {
+        await axios.post(`http://localhost:3000/api/messages/upload/${selectedUser.id}`, formData, {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+
+        setSelectedFile(null);
+      } catch (error) {
+        console.error("Error sending file:", error);
+
+      }
+    }
+  }
 
   useEffect(() => {
     if (showEmojiPicker) {
@@ -260,15 +290,41 @@ export default function ChatArea({ selectedUser }: ChatAreaProps) {
           <div className="h-16 flex items-center space-x-4 px-4 bg-gray-100 relative">
             {isTyping && (
               <div className="absolute bottom-20 left-4 text-gray-500 text-sm">
-                <DotAnimation/>
+                <DotAnimation />
               </div>
             )}
             <button onClick={handleEmoji} className="text-gray-600 hover:text-gray-900">
               <Smile className="h-6 w-6" />
             </button>
-            <button className="text-gray-600 hover:text-gray-900">
+            <button
+              className="text-gray-600 hover:text-gray-900"
+              onClick={
+                () => {
+                  fileInputRef.current?.click();
+                }
+              }
+            >
               <Paperclip className="h-6 w-6" />
             </button>
+            <input
+              ref={fileInputRef}
+              type="file"
+              className="hidden"
+              onChange={handleFileChange}
+            />
+
+            {/* File Upload Confirmation */}
+            {selectedFile && (
+              <div className="flex items-center space-x-2">
+                <p className="text-gray-500 text-sm">{selectedFile.name}</p>
+                <button
+                  onClick={handleSendFile}
+                  className="text-green-500 hover:text-green-600"
+                >
+                  <Send className="h-6 w-6" />
+                </button>
+              </div>
+            )}
             <input
               type="text"
               placeholder="Type a message"
@@ -276,6 +332,9 @@ export default function ChatArea({ selectedUser }: ChatAreaProps) {
               value={message}
               onChange={
                 (e) => {
+                  if (selectedFile) {
+                    handleFileChange(e);
+                  }
                   setMessage(e.target.value);
                   debouncedHandleTyping();
                 }

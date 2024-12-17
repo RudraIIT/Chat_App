@@ -18,6 +18,7 @@ const useGetSocketMessage = (conversationId:any,updateMessages:any) => {
             });
 
             return () => {
+                socket.off('typing');
                 socket.off("newMessage");
             }
         }

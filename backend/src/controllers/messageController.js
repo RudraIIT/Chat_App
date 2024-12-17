@@ -4,6 +4,9 @@ import mongoose from "mongoose";
 import Message from "../models/messageModel.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import { generateRoomId } from "../utils/generateRoom.js";
+import multer from "multer";
+import path from "path";
+import { fileURLToPath } from "url";
 
 export const sendMessage = asyncHandler(async (req, res) => {
     try {
@@ -161,5 +164,64 @@ export const rejectVideoCall = asyncHandler(async (req, res) => {
     });
 });
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        const uploadPath = path.join(__dirname, "../../uploads");
+        cb(null, uploadPath);
+    },
+    filename: (req, file, cb) => {
+        const uniqueName = `${Date.now()}-${file.originalname}`;
+        cb(null, uniqueName);
+    }
+});
+
+const upload = multer({storage});
+
+export const uploadFile = [
+    upload.single("file"),
+    asyncHandler(async(req,res) => {
+        const {id:receiverId} = req.params;
+        const senderId = req.user._id;
+
+        if(!req.file) {
+            return res.status(400).json({
+                success: false,
+                message: "No file uploaded.",
+            });
+        }
+
+        let conversation = await Conversation.findOne({
+            members: { $all: [senderId, receiverId] },
+        });
+
+        if (!conversation) {
+            conversation = await Conversation.create({
+                members: [senderId, receiverId],
+            });
+        }
+
+        const newMessage = new Message({
+            sender: senderId,
+            receiver: receiverId,
+            message: `Uploaded on /uploads/${req.file.filename}`,
+        });
+
+        conversation.messages.push(newMessage._id);
+        await Promise.all([conversation.save(), newMessage.save()]);
+
+        const receiverSocket = getReceiverSocket(receiverId);
+        if (receiverSocket) {
+            io.to(receiverSocket).emit("newMessage", newMessage);
+        }
+
+        res.status(200).json({
+            success: true,
+            data: newMessage,
+        });
+    })
+]
 
 // export {sendMessage, getMessage};
