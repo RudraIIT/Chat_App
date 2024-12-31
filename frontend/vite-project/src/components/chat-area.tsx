@@ -19,6 +19,7 @@ import useVideoCall from "./context/useVideoCall.ts";
 import VideoCall from "./video-call.tsx";
 import DotAnimation from "./dotAnimation/dot-animation.tsx";
 import Cookies from "js-cookie";
+import { usePeerContext } from "./context/PeerContext.tsx";
 
 interface ChatAreaProps {
   selectedUser: {
@@ -44,8 +45,17 @@ export default function ChatArea({ selectedUser }: ChatAreaProps) {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const emojiPickerRef = useRef<HTMLDivElement | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const { startCall, endCall, localStream, remoteStream, isInCall, answerCall } = useVideoCall();
+  const {
+    startCall,
+    endCall,
+    localStream,
+    remoteStream,
+    isInCall,
+    answerCall,
+    incomingCall,
+  } = useVideoCall();
   const { socket } = useSocketContext();
+  const { peer } = usePeerContext();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -61,20 +71,23 @@ export default function ChatArea({ selectedUser }: ChatAreaProps) {
       formData.append("file", selectedFile);
       formData.append("receiverId", selectedUser.id);
       try {
-        await axios.post(`http://localhost:3000/api/messages/upload/${selectedUser.id}`, formData, {
-          withCredentials: true,
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
+        await axios.post(
+          `http://localhost:3000/api/messages/upload/${selectedUser.id}`,
+          formData,
+          {
+            withCredentials: true,
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
 
         setSelectedFile(null);
       } catch (error) {
         console.error("Error sending file:", error);
-
       }
     }
-  }
+  };
 
   useEffect(() => {
     if (showEmojiPicker) {
@@ -86,10 +99,8 @@ export default function ChatArea({ selectedUser }: ChatAreaProps) {
     setShowEmojiPicker(!showEmojiPicker);
   };
 
-
   const handleTyping = useCallback(() => {
     if (socket && selectedUser) {
-      console.log("Emitting typing event");
       socket.emit("typing", { toUserId: selectedUser.id, fromUserId: mainUser });
     }
   }, [socket, selectedUser, mainUser]);
@@ -99,9 +110,7 @@ export default function ChatArea({ selectedUser }: ChatAreaProps) {
 
     const handleIncomingTyping = ({ fromUserId }: { fromUserId: string }) => {
       if (fromUserId === selectedUser.id) {
-        console.log("User is typing...");
         setIsTyping(true);
-
         setTimeout(() => {
           setIsTyping(false);
         }, 3000);
@@ -115,13 +124,14 @@ export default function ChatArea({ selectedUser }: ChatAreaProps) {
     };
   }, [socket, selectedUser]);
 
-  const debouncedHandleTyping = useCallback(debounce(handleTyping, 500), [handleTyping]);
-
+  const debouncedHandleTyping = useCallback(
+    debounce(handleTyping, 500),
+    [handleTyping]
+  );
 
   const handleSendMessage = useCallback(
-    async (e: any) => {
+    async (e: React.FormEvent) => {
       e.preventDefault();
-
       if (message.trim() && selectedUser) {
         await sendMessage(selectedUser.id, message);
         setMessage("");
@@ -132,64 +142,58 @@ export default function ChatArea({ selectedUser }: ChatAreaProps) {
 
   const handleVideoCall = async () => {
     if (selectedUser) {
-      await startCall(selectedUser.id);
+      try {
+        await startCall(selectedUser.id);
+      } catch (error) {
+        console.error("Error starting call:", error);
+        alert("Unable to initiate video call");
+      }
     }
   };
 
   useEffect(() => {
-    if (!socket) return;
-
-    const handleIncomingCall = ({ senderId, offer }: { senderId: string; offer: RTCSessionDescriptionInit }) => {
-      console.log(`Incoming call from: ${senderId}`);
-      const confirmCall = window.confirm(`Incoming call from ${senderId}. Do you want to accept?`);
-
+    if (!peer) return;
+    const handleIncomingCall = (incomingCall: any) => {
+      const confirmCall = window.confirm(
+        "Incoming call. Do you want to accept?"
+      );
       if (confirmCall) {
-        answerCall(senderId, offer);
-        socket.emit("answer-call", { callerId: senderId });
-        // startCall(senderId);
+        answerCall(incomingCall);
       } else {
-        socket.emit("reject-call", { callerId: senderId });
+        incomingCall.close();
       }
     };
 
-
-    socket.on("start-call", handleIncomingCall);
+    peer.on("call", handleIncomingCall);
 
     return () => {
-      socket.off("start-call", handleIncomingCall);
+      peer.off("call", handleIncomingCall);
     };
-  }, [socket, startCall]);
+  }, [peer, incomingCall, answerCall]);
+
 
 
   const toggleProfile = () => {
     setShowProfile(!showProfile);
   };
 
-  const handleSpeechRecognition = useCallback(
-    async () => {
-      const recognition = new (window as any).webkitSpeechRecognition();
-      recognition.lang = "en-US";
+  const handleSpeechRecognition = useCallback(() => {
+    const recognition = new (window as any).webkitSpeechRecognition();
+    recognition.lang = "en-US";
 
-      recognition.onstart = function () {
-        setIsListening(true);
+    recognition.onstart = () => setIsListening(true);
+
+    recognition.onresult = (e: any) => {
+      const transcript = e.results[0][0].transcript;
+      if (selectedUser) {
+        setMessage(transcript);
       }
+    };
 
-      recognition.onresult = function (e: any) {
-        const transcript = e.results[0][0].transcript;
-        if (selectedUser) {
-          setMessage(transcript);
-        }
-      }
+    recognition.onend = () => setIsListening(false);
 
-      recognition.onend = function () {
-        setIsListening(false);
-        recognition.stop();
-      }
-
-      recognition.start();
-
-    }, [message, selectedUser, sendMessage]
-  );
+    recognition.start();
+  }, [selectedUser]);
 
   useEffect(() => {
     if (!selectedUser) return;
@@ -224,6 +228,7 @@ export default function ChatArea({ selectedUser }: ChatAreaProps) {
       </div>
     );
   }
+
 
 
   return (

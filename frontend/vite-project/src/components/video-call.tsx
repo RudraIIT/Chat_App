@@ -40,13 +40,13 @@ export default function VideoCall({ localStream, remoteStream, onEndCall }: Vide
   return (
     <div className="flex flex-col h-full w-full bg-gray-900">
       <div className="flex-1 relative">
-        {/* Remote user video */}
+        {/* Remote user video taking full space */}
         <div className="absolute inset-0 flex items-center justify-center bg-black">
           <video
             ref={remoteVideoRef}
             autoPlay
             playsInline
-            className="max-w-full max-h-full object-cover"
+            className="w-full h-full object-cover"
           />
         </div>
 

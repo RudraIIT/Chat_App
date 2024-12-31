@@ -4,6 +4,7 @@ import WhatsAppLayout from './components/chat';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './components/context/AuthContext';
 import { SocketProvider } from './components/context/SocketContext.tsx';
+import { PeerProvider } from './components/context/PeerContext.tsx';
 import './App.css';
 import { useEffect } from 'react';
 
@@ -26,9 +27,11 @@ function App() {
   return (
     <AuthProvider>
       <SocketProvider>
-        <BrowserRouter>
-          <AppRoutes />
-        </BrowserRouter>
+        <PeerProvider>
+          <BrowserRouter>
+            <AppRoutes />
+          </BrowserRouter>
+        </PeerProvider>
       </SocketProvider>
     </AuthProvider>
   );

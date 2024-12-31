@@ -1,127 +1,96 @@
-import { useRef, useEffect, useState, useCallback } from "react";
-import { useSocketContext } from "./SocketContext.tsx";
+import { useEffect, useRef, useState, useCallback } from "react";
+import { usePeerContext } from "./PeerContext";
+import { MediaConnection } from "peerjs";
 
-
-export default function useVideoCall() {
-    const { socket } = useSocketContext();
+export default function useVideoCall () {
+    const { peer } = usePeerContext();
     const localStream = useRef<MediaStream | null>(null);
     const remoteStream = useRef<MediaStream | null>(null);
     const localVideoRef = useRef<HTMLVideoElement | null>(null);
     const remoteVideoRef = useRef<HTMLVideoElement | null>(null);
     const [isInCall, setIsInCall] = useState(false);
-    const peerConnection = useRef<RTCPeerConnection | null>(null);
+    const [currentCall, setCurrentCall] = useState<MediaConnection | null>(null);
+    const [incomingCall, setIncomingCall] = useState<MediaConnection | null>(null);
+
+    useEffect(() => {
+        if (!peer) return;
+
+        peer.on("call", (call) => {
+            console.log("Incoming call...");
+            setIncomingCall(call); 
+        });
+
+        return () => {
+            peer.off("call");
+        };
+    }, [peer]);
+
+    const answerCall = useCallback(
+        (incomingCall: MediaConnection) => {
+            console.log("Answering call...");
+            navigator.mediaDevices
+                .getUserMedia({ video: true, audio: true })
+                .then((stream) => {
+                    localStream.current = stream;
+                    if (localVideoRef.current) {
+                        localVideoRef.current.srcObject = stream;
+                    }
+
+                    incomingCall.answer(stream); 
+
+                    incomingCall.on("stream", (remoteStreamInstance) => {
+                        remoteStream.current = remoteStreamInstance;
+                        if (remoteVideoRef.current) {
+                            remoteVideoRef.current.srcObject = remoteStreamInstance;
+                        }
+                    });
+
+                    setCurrentCall(incomingCall);
+                    setIsInCall(true);
+                })
+                .catch((err) => {
+                    console.error("Error accessing media devices:", err);
+                });
+        },
+        []
+    );
 
     const startCall = useCallback(
-        async (receiverId: string) => {
-            if (!socket) return;
-    
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-                localStream.current = stream;
-    
-                if (localVideoRef.current) {
-                    localVideoRef.current.srcObject = stream;
-                }
-    
-                peerConnection.current = new RTCPeerConnection();
-    
-                stream.getTracks().forEach((track) => {
-                    peerConnection.current?.addTrack(track, stream);
-                });
-    
-                peerConnection.current.onicecandidate = (e) => {
-                    if (e.candidate) {
-                        socket.emit("ice-candidate", { to: receiverId, candidate: e.candidate });
+        (receiverPeerId: string) => {
+            if (!peer) return;
+            console.log("Starting call to:", receiverPeerId);
+            navigator.mediaDevices
+                .getUserMedia({ video: true, audio: true })
+                .then((stream) => {
+                    localStream.current = stream;
+                    if (localVideoRef.current) {
+                        localVideoRef.current.srcObject = stream;
                     }
-                };
-    
-                peerConnection.current.ontrack = (e) => {
-                    if (!remoteStream.current) {
-                        remoteStream.current = new MediaStream();
-                    }
-                    e.streams[0].getTracks().forEach((track) => {
-                        remoteStream.current?.addTrack(track);
-                    });
-    
-                    if (remoteVideoRef.current) {
-                        remoteVideoRef.current.srcObject = remoteStream.current;
-                    }
-                };
-    
-                const offer = await peerConnection.current.createOffer();
-                await peerConnection.current.setLocalDescription(offer);
-    
-                socket.emit("start-call", { to: receiverId, offer });
-    
-                setIsInCall(true);
-            } catch (error) {
-                console.error("Error starting call:", error);
-            }
-        },
-        [socket]
-    );
-    
-    const answerCall = useCallback(
-        async (callerId: string, offer: RTCSessionDescriptionInit) => {
-            if (!socket) return;
 
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-                localStream.current = stream;
+                    const call = peer.call(receiverPeerId, stream);
 
-                if (localVideoRef.current) {
-                    localVideoRef.current.srcObject = stream;
-                }
-
-                peerConnection.current = new RTCPeerConnection();
-
-                stream.getTracks().forEach((track) => {
-                    peerConnection.current?.addTrack(track, stream);
-                });
-
-                peerConnection.current.onicecandidate = (e) => {
-                    if (e.candidate) {
-                        socket.emit("ice-candidate", {
-                            to: callerId,
-                            candidate: e.candidate,
-                        });
-                    }
-                };
-
-                peerConnection.current.ontrack = (e) => {
-                    if (!remoteStream.current) {
-                        remoteStream.current = new MediaStream();
-                    }
-                    e.streams[0].getTracks().forEach((track) => {
-                        remoteStream.current?.addTrack(track);
+                    call.on("stream", (remoteStreamInstance) => {
+                        remoteStream.current = remoteStreamInstance;
+                        
+                        if (remoteVideoRef.current) {
+                            remoteVideoRef.current.srcObject = remoteStreamInstance;
+                        }
                     });
 
-                    if (remoteVideoRef.current) {
-                        remoteVideoRef.current.srcObject = remoteStream.current;
-                    }
-                };
-
-                await peerConnection.current.setRemoteDescription(offer);
-                const answer = await peerConnection.current.createAnswer();
-                await peerConnection.current.setLocalDescription(answer);
-
-                socket.emit("answer-call", {
-                    to: callerId,
-                    answer,
+                    setCurrentCall(call);
+                    setIsInCall(true);
+                })
+                .catch((err) => {
+                    console.error("Error starting call:", err);
                 });
-
-                setIsInCall(true);
-            } catch (error) {
-                console.error("Error answering call:", error);
-            }
         },
-        [socket]
+        [peer]
     );
 
     const endCall = useCallback(() => {
-        if (peerConnection.current) {
-            peerConnection.current.close();
-            peerConnection.current = null;
+        if (currentCall) {
+            currentCall.close();
+            setCurrentCall(null);
         }
 
         localStream.current?.getTracks().forEach((track) => track.stop());
@@ -140,39 +109,7 @@ export default function useVideoCall() {
         localStream.current = null;
         remoteStream.current = null;
         setIsInCall(false);
-    }, []);
-
-    useEffect(() => {
-        if (!socket) return;
-
-        const handleStartCall = async ({ callerId, offer }: { callerId: string; offer: RTCSessionDescriptionInit }) => {
-            if (confirm(`Do you want to accept the call from ${callerId}?`)) {
-                await answerCall(callerId, offer);
-            }
-        };
-
-        const handleAnswerCall = async ({ answer }: { answer: RTCSessionDescriptionInit }) => {
-            await peerConnection.current?.setRemoteDescription(answer);
-        };
-
-        const handleIceCandidate = async ({ candidate }: { candidate: RTCIceCandidateInit }) => {
-            try {
-                await peerConnection.current?.addIceCandidate(candidate);
-            } catch (error) {
-                console.error("Error adding ICE candidate:", error);
-            }
-        };
-
-        socket.on("start-call", handleStartCall);
-        socket.on("answer-call", handleAnswerCall);
-        socket.on("ice-candidate", handleIceCandidate);
-
-        return () => {
-            socket.off("start-call", handleStartCall);
-            socket.off("answer-call", handleAnswerCall);
-            socket.off("ice-candidate", handleIceCandidate);
-        };
-    }, [socket, answerCall]);
+    }, [currentCall]);
 
     return {
         localStream,
@@ -182,6 +119,7 @@ export default function useVideoCall() {
         isInCall,
         startCall,
         endCall,
-        answerCall
+        answerCall, 
+        incomingCall, 
     };
-}
+};
