@@ -1,7 +1,7 @@
-import { Search, LogOut, Bell } from 'lucide-react';
+import { Search, LogOut, Bell} from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import ChatList from './chat-list';
-import logo from '../assets/profile-pic.jpg';
+import logo from '@/assets/profile-pic.jpg';
 import { handleLogout, useAuth } from './context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { NotificationCard } from './notification-card';
@@ -16,7 +16,6 @@ interface SidebarProps {
 export default function Sidebar({ onSelectUser }: SidebarProps) {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState<string>('');
-  // const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const [notification, setNotification] = useState([]);
   useGetNotifications(setNotification);
   const [notificationCount, setNotificationCount] = useState<number>(notification.length);
@@ -50,11 +49,6 @@ export default function Sidebar({ onSelectUser }: SidebarProps) {
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
   };
-
-  // const handleUserSelect = (userId: string) => {
-  //   setSelectedUserId(userId);
-  //   console.log("Selected User ID:", userId);
-  // };
 
   const handleLogoutFunction = async () => {
     try {

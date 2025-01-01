@@ -8,9 +8,9 @@ import {
   Send,
 } from "lucide-react";
 import { debounce } from "lodash";
-import MessageList from "./message-list.tsx";
+import MessageList from "./message-list";
 import { useEffect, useState, useCallback, useRef } from "react";
-import logo from "../assets/profile-pic.jpg";
+import logo from "@/assets/profile-pic.jpg";
 import useSendMessage from "./context/useSendMessage.ts";
 import axios from "axios";
 import EmojiPicker from "emoji-picker-react";

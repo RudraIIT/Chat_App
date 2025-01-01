@@ -1,8 +1,8 @@
-import SignupPage from './components/signup.tsx';
-import LoginPage from './components/login.tsx';
-import WhatsAppLayout from './components/chat.tsx';
+import SignupPage from './components/signup';
+import LoginPage from './components/login';
+import WhatsAppLayout from './components/chat';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider, useAuth } from './components/context/AuthContext.tsx';
+import { AuthProvider, useAuth } from './components/context/AuthContext';
 import { SocketProvider } from './components/context/SocketContext.tsx';
 import { PeerProvider } from './components/context/PeerContext.tsx';
 import './App.css';

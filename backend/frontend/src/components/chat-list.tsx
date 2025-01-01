@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import logo from '../assets/profile-pic.jpg';
+import logo from '@/assets/profile-pic.jpg';
 import useGetAllUsers from './context/useGetAllUsers.ts';
 import axios from 'axios';
 

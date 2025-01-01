@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { ChevronRight } from 'lucide-react';
-import logo from '../assets/logo.jpg';
+import logo from '@/assets/logo.jpg';
 import axios from 'axios';
 import { toast } from 'sonner';
 import Cookies from 'js-cookie';
