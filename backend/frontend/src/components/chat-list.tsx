@@ -52,7 +52,7 @@ export default function ChatList({ searchQuery, onSelectUser }: ChatListProps) {
 
       fetchLastMessages();
     }
-  }, [filteredUsers]);
+  }, [filteredUsers,allUsers]);
 
   return (
     <div className="overflow-y-auto h-[calc(100vh-120px)]">
