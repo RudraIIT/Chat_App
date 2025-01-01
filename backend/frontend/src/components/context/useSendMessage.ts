@@ -14,7 +14,7 @@ const useSendMessage = () => {
 
         setLoading(true);
         try {
-            const response = await axios.post(`http://localhost:3000/api/messages/send/${id}`,{
+            const response = await axios.post(`https://chat-app-zegp.onrender.com/api/messages/send/${id}`,{
                 message
             },{withCredentials:true}
         );

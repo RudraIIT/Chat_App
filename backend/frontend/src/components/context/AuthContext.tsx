@@ -33,7 +33,7 @@ export const useAuth = () => {
 
 export const handleLogout = async (setUser: React.Dispatch<any>) => {
     try {
-        const response = await axios.post('http://localhost:3000/api/users/logout', {}, {
+        const response = await axios.post('https://chat-app-zegp.onrender.com/api/users/logout', {}, {
             withCredentials: true,
         });
 

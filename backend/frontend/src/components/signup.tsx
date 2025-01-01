@@ -32,7 +32,7 @@ export default function SignUpPage() {
         const data = { 'username': username, 'password': password, 'email': email }
         // console.log(data);
         try {
-            await axios.post("http://localhost:3000/api/users/register", data , {
+            await axios.post("https://chat-app-zegp.onrender.com/api/users/register", data , {
                 withCredentials: true,
             })
                 .then((res) => {

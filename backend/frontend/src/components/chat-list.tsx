@@ -31,7 +31,7 @@ export default function ChatList({ searchQuery, onSelectUser }: ChatListProps) {
           filteredUsers.map(async (user: any) => {
             try {
               const response = await axios.get(
-                `http://localhost:3000/api/messages/getLastMessage/${user._id}`,
+                `https://chat-app-zegp.onrender.com/api/messages/getLastMessage/${user._id}`,
                 { withCredentials: true }
               );
               return { userId: user._id, message: response.data.message || 'No messages yet' };

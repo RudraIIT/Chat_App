@@ -34,7 +34,7 @@ export function UserProfileCard() {
     useEffect(() => {
         const getUser = async () => {
             try {
-                const response = await axios.get<User>(`http://localhost:3000/api/users/getProfile/${userId}`, {
+                const response = await axios.get<User>(`https://chat-app-zegp.onrender.com/api/users/getProfile/${userId}`, {
                     withCredentials: true,
                 });
                 setUser(response.data);
@@ -48,7 +48,7 @@ export function UserProfileCard() {
     const handleSendRequest = async () => {
         const data = {senderId: userId, receiverEmail: friendEmail};
         try {
-            const response = await axios.post("http://localhost:3000/api/users/sendRequest", data, {
+            const response = await axios.post("https://chat-app-zegp.onrender.com/api/users/sendRequest", data, {
                 withCredentials: true,
             });
             console.log(response);

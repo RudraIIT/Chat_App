@@ -14,7 +14,7 @@ function useGetAllUsers() {
             setLoading(true);
             try {
                 if(userId && token) {
-                    const response = await axios.get('http://localhost:3000/api/users/allusers', {
+                    const response = await axios.get('https://chat-app-zegp.onrender.com/api/users/allusers', {
                         withCredentials: true,
                     });
                     setAllUsers(response.data);

@@ -21,7 +21,7 @@ export function NotificationCard() {
     useEffect(() => {
         const fetchNotifications = async () => {
             try {
-                const response = await axios.get("http://localhost:3000/api/users/getRequest", {
+                const response = await axios.get("https://chat-app-zegp.onrender.com/api/users/getRequest", {
                     withCredentials: true,
                 });
 
@@ -37,7 +37,7 @@ export function NotificationCard() {
     const handleAcceptRequest = async (friendId: string) => {
         try {
             await axios.post(
-                `http://localhost:3000/api/users/acceptRequest`,
+                `https://chat-app-zegp.onrender.com/api/users/acceptRequest`,
                 {senderId: friendId},
                 { withCredentials: true }
             );

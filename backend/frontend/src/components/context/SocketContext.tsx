@@ -23,7 +23,7 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
   const { user } = useAuth();
   useEffect(() => {
     if (user) {
-      const socketInstance = io("http://localhost:3000", {
+      const socketInstance = io("https://chat-app-zegp.onrender.com/", {
         query: {
           userId: user,
         },

@@ -72,7 +72,7 @@ export default function ChatArea({ selectedUser }: ChatAreaProps) {
       formData.append("receiverId", selectedUser.id);
       try {
         await axios.post(
-          `http://localhost:3000/api/messages/upload/${selectedUser.id}`,
+          `https://chat-app-zegp.onrender.com/api/messages/upload/${selectedUser.id}`,
           formData,
           {
             withCredentials: true,
@@ -204,7 +204,7 @@ export default function ChatArea({ selectedUser }: ChatAreaProps) {
 
       try {
         const response = await axios.get(
-          `http://localhost:3000/api/users/getProfile/${selectedUser.id}`,
+          `https://chat-app-zegp.onrender.com/api/users/getProfile/${selectedUser.id}`,
           {
             withCredentials: true,
           }

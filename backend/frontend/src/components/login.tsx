@@ -31,7 +31,7 @@ export default function LoginPage() {
         const data = { username, password, email };
 
         try {
-            const res = await axios.post('http://localhost:3000/api/users/login', data ,{
+            const res = await axios.post('https://chat-app-zegp.onrender.com/api/users/login', data ,{
                 withCredentials: true,
             });
             if (res.data.success) {

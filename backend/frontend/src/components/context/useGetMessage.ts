@@ -12,7 +12,7 @@ const useGetMessage = () => {
             setLoading(true);
             if(selectedConversation && selectedConversation._id) {
                 try {
-                    const response = await axios.get(`http://localhost:3000/api/messages/get/${selectedConversation._id}`);
+                    const response = await axios.get(`https://chat-app-zegp.onrender.com/api/messages/get/${selectedConversation._id}`);
                     setMessage(response.data);
                     setLoading(false);
                 } catch (error) {

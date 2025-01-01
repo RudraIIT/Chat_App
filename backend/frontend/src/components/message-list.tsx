@@ -24,7 +24,7 @@ export default function MessageList(userId: any) {
     const fetchMessages = async () => {
       try {
         // console.log("User ID:", userId.userId);
-        const response = await axios.get(`http://localhost:3000/api/messages/get/${userId.userId}`, {
+        const response = await axios.get(`https://chat-app-zegp.onrender.com/api/messages/get/${userId.userId}`, {
           withCredentials: true,
         });
         setMessages(response.data);
@@ -65,7 +65,7 @@ export default function MessageList(userId: any) {
                   className="w-40 h-40 object-cover rounded"
                 />
 
-                < Link to={`http://localhost:3000${message.message.split("Uploaded on ")[1]}`}
+                < Link to={`https://chat-app-zegp.onrender.com${message.message.split("Uploaded on ")[1]}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-blue-500 underline block mt-2">

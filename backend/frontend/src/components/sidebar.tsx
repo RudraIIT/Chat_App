@@ -33,7 +33,7 @@ export default function Sidebar({ onSelectUser }: SidebarProps) {
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/api/users/getRequest", {
+        const response = await axios.get("https://chat-app-zegp.onrender.com/api/users/getRequest", {
           withCredentials: true,
         });
 
