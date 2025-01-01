@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useSocketContext } from "./SocketContext.tsx";
-import notification from "@/assets/notification_tone.mp3";
+import notification from "../../assets/notification_tone.mp3";
 
 const useGetSocketMessage = (conversationId:any,updateMessages:any) => {
     const { socket } = useSocketContext();

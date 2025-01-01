@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import Cookies from 'js-cookie';
 import axios from 'axios';
 import useGetSocketMessage from './context/useGetSocketMessage.ts';
-import file from '@/assets/img.png';
+import file from '../assets/img.png';
 import { Link } from 'react-router-dom';
 
 interface message {

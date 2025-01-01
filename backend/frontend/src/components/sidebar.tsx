@@ -1,7 +1,7 @@
 import { Search, LogOut, Bell } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import ChatList from './chat-list';
-import logo from '@/assets/profile-pic.jpg';
+import logo from '../assets/profile-pic.jpg';
 import { handleLogout, useAuth } from './context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { NotificationCard } from './notification-card';
