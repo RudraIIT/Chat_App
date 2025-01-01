@@ -26,7 +26,7 @@ app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 app.use(express.static(path.join(deploy_dirname, '/frontend/dist')))
 app.use(cookieParser());
 app.use(cors({
-    origin: 'http://localhost:5173',
+    origin: "https://chat-app-zegp.onrender.com",
     credentials: true,
 }));
 
