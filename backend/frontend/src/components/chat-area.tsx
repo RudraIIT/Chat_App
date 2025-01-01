@@ -18,7 +18,7 @@ import { useSocketContext } from "./context/SocketContext.tsx";
 import useVideoCall from "./context/useVideoCall.ts";
 import VideoCall from "./video-call.tsx";
 import DotAnimation from "./dotAnimation/dot-animation.tsx";
-import Cookies from "node_modules/@types/js-cookie/index";
+import Cookies from "js-cookie";
 import { usePeerContext } from "./context/PeerContext.tsx";
 
 interface ChatAreaProps {

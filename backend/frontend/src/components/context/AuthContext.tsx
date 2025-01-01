@@ -1,4 +1,4 @@
-import Cookies from 'node_modules/@types/js-cookie';
+import Cookies from 'js-cookie';
 import { createContext, useContext, useState, ReactNode } from 'react';
 import axios from 'axios';
 

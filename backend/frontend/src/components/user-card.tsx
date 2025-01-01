@@ -11,7 +11,7 @@ import logo from "@/assets/profile-pic.jpg";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useEffect, useState } from "react";
-import Cookies from "node_modules/@types/js-cookie";
+import Cookies from "js-cookie";
 import axios from "axios";
 
 interface User {

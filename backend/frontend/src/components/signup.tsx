@@ -6,7 +6,7 @@ import { ChevronRight } from 'lucide-react'
 import logo from "@/assets/logo.jpg";
 import axios from 'axios'
 import { toast } from 'sonner'
-import Cookies from 'node_modules/@types/js-cookie'
+import Cookies from 'js-cookie'
 import { useNavigate } from 'react-router-dom'
 
 export default function SignUpPage() {
