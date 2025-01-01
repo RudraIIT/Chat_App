@@ -8,7 +8,7 @@ import {
   Send,
 } from "lucide-react";
 import { debounce } from "lodash";
-import MessageList from "./message-list";
+import MessageList from "./message-list.tsx";
 import { useEffect, useState, useCallback, useRef } from "react";
 import logo from "@/assets/profile-pic.jpg";
 import useSendMessage from "./context/useSendMessage.ts";
@@ -18,7 +18,7 @@ import { useSocketContext } from "./context/SocketContext.tsx";
 import useVideoCall from "./context/useVideoCall.ts";
 import VideoCall from "./video-call.tsx";
 import DotAnimation from "./dotAnimation/dot-animation.tsx";
-import Cookies from "js-cookie";
+import Cookies from "node_modules/@types/js-cookie/index";
 import { usePeerContext } from "./context/PeerContext.tsx";
 
 interface ChatAreaProps {

@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import Cookies from 'js-cookie';
+import Cookies from 'node_modules/@types/js-cookie/index';
 import axios from 'axios';
 import useGetSocketMessage from './context/useGetSocketMessage.ts';
 import file from '@/assets/img.png';

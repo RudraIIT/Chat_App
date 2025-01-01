@@ -11,7 +11,7 @@ import logo from "@/assets/profile-pic.jpg";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useEffect, useState } from "react";
-import Cookies from "js-cookie";
+import Cookies from "node_modules/@types/js-cookie";
 import axios from "axios";
 
 interface User {
@@ -26,7 +26,7 @@ interface User {
     updatedAt: string;
 }
 
-export function UserCard() {
+export function UserProfileCard() {
     const [user, setUser] = useState<User | null>(null); 
     const [friendEmail, setFriendEmail] = useState("");
     const userId = Cookies.get("user");
@@ -62,7 +62,7 @@ export function UserCard() {
     }
 
     return (
-        <Card className="w-full">
+        <Card className="w-[350px]">
             <CardHeader>
                 <CardTitle>User Profile</CardTitle>
                 <CardDescription>Manage your profile information.</CardDescription>

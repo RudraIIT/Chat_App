@@ -1,59 +1,55 @@
-import { useState,useEffect } from 'react'
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { ChevronRight } from 'lucide-react'
-import logo from "@/assets/logo.jpg";
-import axios from 'axios'
-import { toast } from 'sonner'
-import Cookies from 'js-cookie'
-import { useNavigate } from 'react-router-dom'
+import { useEffect, useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { ChevronRight } from 'lucide-react';
+import logo from '@/assets/logo.jpg';
+import axios from 'axios';
+import { toast } from 'sonner';
+import Cookies from 'node_modules/@types/js-cookie';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from './context/AuthContext';
 
-export default function SignUpPage() {
+export default function LoginPage() {
     const navigate = useNavigate();
-    
+    const { setUser } = useAuth();
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const [email, setEmail] = useState('');
+
     useEffect(() => {
         const token = Cookies.get('token');
         if (token) {
-            navigate('/');
+            navigate('/', { replace: true });
         }
     }, []);
 
-    const [username, setUsername] = useState('')
-    const [password, setPassword] = useState('')
-    const [email, setEmail] = useState('')
-
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        const toastId = toast.loading(
-            "Please wait while we sign-up you in...",
-        );
 
-        const data = { 'username': username, 'password': password, 'email': email }
-        // console.log(data);
+        const toastId = toast.loading('Please wait while we log you in...');
+        const data = { username, password, email };
+
         try {
-            await axios.post("http://localhost:3000/api/users/register", data , {
+            const res = await axios.post('http://localhost:3000/api/users/login', data ,{
                 withCredentials: true,
-            })
-                .then((res) => {
-                    console.log(res);
-                    if (res.data.success) {
-                        toast.success("Signed-Up in successfully", { id: toastId });
-                        const token = res.data.token;
-                        Cookies.set('token', token, { expires: 7, secure: true });
-                        Cookies.set('user', res.data.user._id, { expires: 7, secure: true });
-                        navigate('/');
-                    }
-                })
-                .catch((error) => {
-                    console.log(error);
-                    toast.error("Error in signing in. Please try again later.", { id: toastId });
-                })
-        } catch (error) {
-            toast.error("Error in signing in. Please try again later.", { id: toastId });
-        }
+            });
+            if (res.data.success) {
+                toast.success('Logged in successfully', { id: toastId });
+                const { token, user } = res.data;
+                Cookies.set('token', token, { expires: 7, secure: true });
+                Cookies.set('user', user._id, { expires: 7, secure: true });
 
-    }
+                setUser(user);
+                navigate('/', { replace: true });
+            } else {
+                toast.error('Login failed. Please try again.', { id: toastId });
+            }
+        } catch (error) {
+            console.error(error);
+            toast.error('Error in logging in. Please try again later.', { id: toastId });
+        }
+    };
 
     return (
         <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
@@ -61,7 +57,7 @@ export default function SignUpPage() {
                 <div className="flex justify-center mb-8">
                     <img src={logo} alt="WhatsApp Logo" className="w-20 h-20" />
                 </div>
-                <h1 className="text-2xl font-bold text-center mb-6">Sign-Up to WhatsApp</h1>
+                <h1 className="text-2xl font-bold text-center mb-6">Login to WhatsApp</h1>
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div className="space-y-2">
                         <Label htmlFor="Username">Username</Label>
@@ -100,20 +96,15 @@ export default function SignUpPage() {
                 <p className="mt-6 text-center text-sm text-gray-600">
                     By tapping Next, you agree to our Terms and Privacy Policy.
                 </p>
-                {/* <div className="flex items-center justify-center">
-                    <span className="text-sm text-gray-600">Already have an account?</span>
-                </div> */}
-                <div className="flex flex-col items-center justify-center space-y-2 mt-3">
-                    <span className="text-sm text-gray-700">
-                        Already have an account?
-                    </span>
-                    <button onClick={() => navigate('/login')} className="text-sm text-green-500 hover:underline mt-4">
-                        Login
+                <div className="flex flex-col items-center justify-center space-y-2">
+                    <button
+                        onClick={() => navigate('/signup')}
+                        className="text-sm text-green-500 hover:underline mt-4"
+                    >
+                        Signup
                     </button>
                 </div>
-
             </div>
         </div>
-    )
+    );
 }
-

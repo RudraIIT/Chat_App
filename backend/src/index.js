@@ -18,9 +18,12 @@ dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+const deploy_dirname = path.resolve();
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
+app.use(express.static(path.join(deploy_dirname, '/frontend/dist')))
 app.use(cookieParser());
 app.use(cors({
     origin: 'http://localhost:5173',
@@ -29,6 +32,16 @@ app.use(cors({
 
 app.use('/api/users',userRoutes);
 app.use('/api/messages',messageRoutes);
+
+if(process.env.NODE_ENV === 'production'){
+    app.get('*', (req, res) => {
+        res.sendFile(path.resolve(deploy_dirname, "frontend","dist","index.html"));
+    })
+} else {
+    app.get('/', (req, res) => {
+        res.send('API is running...');
+    })
+}
 
 connectDB()
     .then(() => {
