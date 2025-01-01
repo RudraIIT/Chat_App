@@ -1,5 +1,7 @@
 # Chat Application
 
+Deployed at [text](https://chat-app-zegp.onrender.com/)
+
 A real-time chat application built using **Socket.io** for real-time communication, **Redis** for message brokering and scalability, and a modern front-end UI for a smooth user experience. This chat app allows users to send and receive messages instantly in multiple chat rooms or one-on-one conversations.
 
 ## Features
