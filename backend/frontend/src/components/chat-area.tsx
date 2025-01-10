@@ -20,6 +20,7 @@ import VideoCall from "./video-call.tsx";
 import DotAnimation from "./dotAnimation/dot-animation.tsx";
 import Cookies from "js-cookie";
 import { usePeerContext } from "./context/PeerContext.tsx";
+import { useToast } from "@/hooks/use-toast.ts";
 
 interface ChatAreaProps {
   selectedUser: {
@@ -57,6 +58,7 @@ export default function ChatArea({ selectedUser }: ChatAreaProps) {
   const { socket } = useSocketContext();
   const { peer } = usePeerContext();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const {toast} = useToast();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -154,9 +156,14 @@ export default function ChatArea({ selectedUser }: ChatAreaProps) {
   useEffect(() => {
     if (!peer) return;
     const handleIncomingCall = (incomingCall: any) => {
-      const confirmCall = window.confirm(
-        "Incoming call. Do you want to accept?"
-      );
+      let confirmCall:boolean = false
+      toast({
+        title: 'Incoming Call',
+        description: 'Incoming call from user',
+        className: 'bg-green-500 text-white',
+        onClick : () => confirmCall = true,
+      })
+
       if (confirmCall) {
         answerCall(incomingCall);
       } else {
