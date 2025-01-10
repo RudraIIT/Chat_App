@@ -21,6 +21,8 @@ import axios from "axios"
 
 export function getOtp() {
   const [email, setEmail] = useState("")
+  const [newPassword, setNewPassword] = useState("")
+  const [value, setValue] = useState("")
 
   const sendOtp = async() => {
     try {
@@ -41,12 +43,15 @@ export function getOtp() {
 
   const handleOtp = async() => {
     try {
-      const response = await axios.post("https://chat-app-zegp.onrender.com/api/users/verifyOtp", {
-        email:email
+      const response = await axios.post("https://chat-app-zegp.onrender.com/api/users/resetPassword", {
+        email:email,
+        otp:value,
+        newPassword:newPassword
       });
 
       if (response.data.status === 200) {
         console.log("OTP verified successfully");
+        alert("Password changed successfully");
       }
 
     } catch (error) {
@@ -74,10 +79,16 @@ export function getOtp() {
             <Input id="email" value={email} onChange={(e) => setEmail(e.target.value)} className="col-span-3" />
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="password" className="text-right">
+              New Password
+            </Label>
+            <Input id="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} className="col-span-3" />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="otp" className="text-right">
               OTP
             </Label>
-            <InputOTP maxLength={6}>
+            <InputOTP maxLength={6} value={value} onChange={(value) => setValue(value)}>
               <InputOTPGroup>
                 <InputOTPSlot index={0} />
                 <InputOTPSlot index={1} />

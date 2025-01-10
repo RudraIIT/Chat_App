@@ -156,20 +156,23 @@ const getOtp = asyncHandler(async(req,res) => {
         return res.status(400).json(new ApiResponse(400, "Email is required"));
     }
 
-    // const user = await User.findOne({ email });
+    const user = await User.findOne({ email });
 
-    // if (!user) {
-    //     return res.status(404).json(new ApiResponse(404, "User not found"));
-    // }
+    if (!user) {
+        return res.status(404).json(new ApiResponse(404, "User not found"));
+    }
 
     const otp = Math.floor(100000 + Math.random() * 900000);
-    console.log('OTP:',otp);
-    // user.resetPasswordToken = otp;
+    // console.log('OTP:',otp);
+    user.resetPasswordToken = otp;
 
-    // await user.save();
+    await user.save();
 
     const transporter = nodemailer.createTransport({
-        service: 'gmail',
+        service: 'Gmail',
+        host: 'smtp.gmail.com',
+        port: 465,
+        secure: true,
         auth: {
             user: process.env.EMAIL_USERNAME,
             pass: process.env.EMAIL_PASSWORD
@@ -187,17 +190,14 @@ const getOtp = asyncHandler(async(req,res) => {
     
     transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
-            // Send the error response and exit
             console.log('Error:',error);
             return res.status(500).json({ status: 500, message: "Failed to send OTP" });
         }
-        console.log('Email sent: ' + info.response);
-        // Send success response
         return res.status(200).json({ status: 200, message: "OTP sent successfully" });
     });
     
 
-    // res.status(200).json(new ApiResponse(200, `OTP sent to ${email}`));
+    res.status(200).json(new ApiResponse(200, `OTP sent to ${email}`));
 });
 
 const resetPassword = asyncHandler(async(req,res) => {
