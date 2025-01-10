@@ -222,7 +222,7 @@ const resetPassword = asyncHandler(async(req,res) => {
 
     await user.save();
 
-    res.status(200).json(new ApiResponse(200, "Password reset successfully"));
+    return res.status(200).json(new ApiResponse(200, "Password reset successfully"));
 
 });
 
