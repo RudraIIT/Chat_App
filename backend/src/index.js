@@ -20,6 +20,8 @@ const __dirname = path.dirname(__filename);
 
 const deploy_dirname = path.resolve();
 
+app.set('trust proxy', true);
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use("/uploads", express.static(path.join(__dirname, "../uploads")));

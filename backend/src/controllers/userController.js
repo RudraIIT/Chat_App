@@ -5,6 +5,7 @@ import sendToken from "../utils/jwtToken.js";
 import crypto from 'crypto';
 import asyncHandler from "../utils/asyncHandler.js";
 import { getReceiverSocket,io } from "../socketIO/index.js";
+import nodemailer from 'nodemailer';
 
 const registerUser = asyncHandler(async (req, res) => {
     const { username, email, password } = req.body;
