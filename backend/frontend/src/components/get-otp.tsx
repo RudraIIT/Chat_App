@@ -43,7 +43,6 @@ export function getOtp() {
 
   const handleOtp = async() => {
     try {
-      console.log('Changing password');
       const response = await axios.post("https://chat-app-zegp.onrender.com/api/users/resetPassword", {
         email:email,
         otp:value,
@@ -51,6 +50,8 @@ export function getOtp() {
       },{
         withCredentials:true
       });
+
+      console.log(response.data);
 
       if (response.data.status === 200) {
         console.log("OTP verified successfully");
