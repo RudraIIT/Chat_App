@@ -32,7 +32,7 @@ export function getOtp() {
         withCredentials:true
       });
 
-      if (response.data.status === 200) {
+      if (response.data.statusCode === 200) {
         console.log("OTP sent successfully");
       }
 
@@ -51,9 +51,7 @@ export function getOtp() {
         withCredentials:true
       });
 
-      console.log(response.data);
-
-      if (response.data.status === 200) {
+      if (response.data.statusCode === 200) {
         console.log("OTP verified successfully");
         alert("Password changed successfully");
       }
