@@ -2,7 +2,7 @@ import { Server } from "socket.io";
 import http from "http";
 import express from "express";
 import { createAdapter } from "@socket.io/redis-streams-adapter";
-// import redis from "../redis/index.js";
+import redis from "../redis/index.js";
 
 const app = express();
 
@@ -14,7 +14,7 @@ const io = new Server(server, {
         methods: ["GET", "POST"],
         credentials: true,
     },
-    // adapter: createAdapter(redis),
+    adapter: createAdapter(redis),
 });
 
 export const getReceiverSocket = (receiverId) => {

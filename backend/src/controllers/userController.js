@@ -148,4 +148,8 @@ const acceptFriendRequest = asyncHandler(async (req, res) => {
     res.status(200).json(new ApiResponse(200, "Friend request accepted successfully"));
 });
 
+const changePassword = asyncHandler(async(req,res) => {
+
+});
+
 export { registerUser, loginUser, logoutUser, allUsers, getUserProfile, sendFriendRequest,getFriendRequests, acceptFriendRequest };

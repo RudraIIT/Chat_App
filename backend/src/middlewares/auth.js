@@ -1,6 +1,7 @@
 import User from '../models/userModel.js';
 import ApiError from '../utils/ApiError.js';
 import jwt from 'jsonwebtoken';
+import {rateLimit} from 'express-rate-limit';
 
 const isAuthenticatedUser = async (req, res, next) => {
     const token = req.cookies.token;
@@ -19,4 +20,10 @@ const isAuthenticatedUser = async (req, res, next) => {
 
 }
 
-export {isAuthenticatedUser};
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, 
+    max: 100,
+    message: "Too many requests from this IP, please try again after 15 minutes",
+})
+
+export {isAuthenticatedUser, limiter};
