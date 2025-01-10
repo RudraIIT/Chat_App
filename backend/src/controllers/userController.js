@@ -194,7 +194,7 @@ const getOtp = asyncHandler(async(req,res) => {
     });
     
 
-    res.status(200).json(new ApiResponse(200, `OTP sent to ${email}`));
+    // res.status(200).json(new ApiResponse(200, `OTP sent to ${email}`));
 });
 
 const resetPassword = asyncHandler(async(req,res) => {
