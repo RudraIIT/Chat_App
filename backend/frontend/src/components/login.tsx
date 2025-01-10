@@ -57,7 +57,7 @@ export default function LoginPage() {
                 <div className="flex justify-center mb-8">
                     <img src={logo} alt="WhatsApp Logo" className="w-20 h-20" />
                 </div>
-                <h1 className="text-2xl font-bold text-center mb-6">Login to WhatsApp</h1>
+                <h1 className="text-2xl font-bold text-center mb-6">Login to Chat-App</h1>
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div className="space-y-2">
                         <Label htmlFor="Username">Username</Label>
