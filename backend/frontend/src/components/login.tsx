@@ -9,7 +9,6 @@ import { toast } from 'sonner';
 import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
-import { getOtp } from './get-otp';
 
 export default function LoginPage() {
     const navigate = useNavigate();
@@ -95,7 +94,7 @@ export default function LoginPage() {
                     </Button>
                 </form>
                 <p className="mt-6 text-center text-sm text-gray-600">
-                    {getOtp()}
+                    By tapping Next, you agree to our Terms and Privacy Policy.
                 </p>
                 <div className="flex flex-col items-center justify-center space-y-2">
                     <button

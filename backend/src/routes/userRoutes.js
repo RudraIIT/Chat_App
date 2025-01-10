@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { registerUser, loginUser, logoutUser,allUsers, getUserProfile, sendFriendRequest,getFriendRequests, acceptFriendRequest, getOtp, resetPassword } from "../controllers/userController.js";
-import { isAuthenticatedUser,limiter } from "../middlewares/auth.js";
+import { registerUser, loginUser, logoutUser,allUsers, getUserProfile, sendFriendRequest,getFriendRequests, acceptFriendRequest } from "../controllers/userController.js";
+import { isAuthenticatedUser } from "../middlewares/auth.js";
 
 const router = Router();
 router.post('/register', registerUser);
@@ -11,7 +11,5 @@ router.post('/logout', isAuthenticatedUser, logoutUser);
 router.post('/sendRequest', isAuthenticatedUser, sendFriendRequest);
 router.get('/getRequest', isAuthenticatedUser, getFriendRequests);
 router.post('/acceptRequest', isAuthenticatedUser, acceptFriendRequest);
-router.post('/getOtp',limiter, getOtp);
-router.post('/resetPassword', resetPassword);
 
 export default router;

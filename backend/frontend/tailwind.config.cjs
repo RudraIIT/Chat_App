@@ -23,16 +23,11 @@ module.exports = {
           "50%": { transform: "scale(1.2)", opacity: "0.8" },
           "100%": { transform: "scale(1)", opacity: "1" },
         },
-        "caret-blink": {
-          "0%,70%,100%": { opacity: "1" },
-          "20%,50%": { opacity: "0" },
-        },
       },
       animation: {
         pulse: "pulse 1s infinite",
         slideDown: 'slideDown 0.5s ease-in-out',
         slideUp: 'slideUp 0.5s ease-in-out forwards',
-        "caret-blink": "caret-blink 1.25s ease-out infinite"
       },
       borderRadius: {
         lg: 'var(--radius)', // Large border radius

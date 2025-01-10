@@ -1,8 +1,8 @@
 import { Server } from "socket.io";
 import http from "http";
 import express from "express";
-// import { createAdapter } from "@socket.io/redis-streams-adapter";
-// import redis from "../redis/index.js";
+import { createAdapter } from "@socket.io/redis-streams-adapter";
+import redis from "../redis/index.js";
 
 const app = express();
 
@@ -10,7 +10,7 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
     cors: {
-        origin: "https://chat-app-zegp.onrender.com" ,
+        origin: "https://chat-app-zegp.onrender.com",
         methods: ["GET", "POST"],
         credentials: true,
     },

@@ -5,7 +5,6 @@ import sendToken from "../utils/jwtToken.js";
 import crypto from 'crypto';
 import asyncHandler from "../utils/asyncHandler.js";
 import { getReceiverSocket,io } from "../socketIO/index.js";
-import nodemailer from 'nodemailer';
 
 const registerUser = asyncHandler(async (req, res) => {
     const { username, email, password } = req.body;
@@ -149,73 +148,8 @@ const acceptFriendRequest = asyncHandler(async (req, res) => {
     res.status(200).json(new ApiResponse(200, "Friend request accepted successfully"));
 });
 
-const getOtp = asyncHandler(async(req,res) => {
-    const {email} = req.body;
-
-    if(!email) {
-        return res.status(400).json(new ApiResponse(400, "Email is required"));
-    }
-
-    // const user = await User.findOne({ email });
-
-    // if (!user) {
-    //     return res.status(404).json(new ApiResponse(404, "User not found"));
-    // }
-
-    // const otp = Math.floor(100000 + Math.random() * 900000);
-
-    // user.resetPasswordToken = otp;
-
-    // await user.save();
-
-    const transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-            user: process.env.EMAIL_USERNAME,
-            pass: process.env.EMAIL_PASSWORD
-        }
-    });
-
-    const mailOptions = {
-        from: process.env.EMAIL_USERNAME,
-        to: email,
-        subject: 'Password Reset OTP',
-        text: `Your OTP is ${otp}`
-    };
-
-    transporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-            return res.status(500).json(new ApiResponse(500, "Failed to send OTP"));
-        }
-    });
-
-    res.status(200).json(new ApiResponse(200, `OTP sent to ${email}`));
-});
-
-const resetPassword = asyncHandler(async(req,res) => {
-
-    const {email,otp, newPassword} = req.body;
-
-    if (!email || !otp || !newPassword) {
-        return res.status(400).json(new ApiResponse(400, "Invalid input"));
-    }
-
-    const user = await User.findOne({ email });
-
-    if (!user) {
-        return res.status(404).json(new ApiResponse(404, "User not found"));
-    }
-
-    if (user.resetPasswordToken !== otp) {
-        return res.status(400).json(new ApiResponse(400, "Invalid OTP"));
-    }
-
-    user.password = newPassword;
-
-    await user.save();
-
-    res.status(200).json(new ApiResponse(200, "Password reset successfully"));
+const changePassword = asyncHandler(async(req,res) => {
 
 });
 
-export { registerUser, loginUser, logoutUser, allUsers, getUserProfile, sendFriendRequest,getFriendRequests, acceptFriendRequest, getOtp, resetPassword };
+export { registerUser, loginUser, logoutUser, allUsers, getUserProfile, sendFriendRequest,getFriendRequests, acceptFriendRequest };
