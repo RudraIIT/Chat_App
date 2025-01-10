@@ -182,6 +182,8 @@ const getOtp = asyncHandler(async(req,res) => {
         subject: 'Password Reset OTP',
         text: `Your OTP is ${otp}`
     };
+
+    console.log('Otp: ',otp);
     
     transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
