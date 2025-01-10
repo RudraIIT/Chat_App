@@ -162,7 +162,7 @@ const getOtp = asyncHandler(async(req,res) => {
     //     return res.status(404).json(new ApiResponse(404, "User not found"));
     // }
 
-    // const otp = Math.floor(100000 + Math.random() * 900000);
+    const otp = Math.floor(100000 + Math.random() * 900000);
 
     // user.resetPasswordToken = otp;
 

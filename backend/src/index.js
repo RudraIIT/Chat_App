@@ -20,7 +20,7 @@ const __dirname = path.dirname(__filename);
 
 const deploy_dirname = path.resolve();
 
-app.set('trust proxy', true);
+app.set('trust proxy', 1);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
