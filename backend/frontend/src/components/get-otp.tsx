@@ -26,6 +26,8 @@ export function getOtp() {
     try {
       const response = await axios.post("https://chat-app-zegp.onrender.com/api/users/getOtp", {
         email:email
+      },{
+        withCredentials:true
       });
 
       if (response.data.status === 200) {
