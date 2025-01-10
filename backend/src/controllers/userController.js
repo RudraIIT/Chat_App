@@ -163,7 +163,7 @@ const getOtp = asyncHandler(async(req,res) => {
     // }
 
     const otp = Math.floor(100000 + Math.random() * 900000);
-
+    console.log('OTP:',otp);
     // user.resetPasswordToken = otp;
 
     // await user.save();
@@ -175,19 +175,24 @@ const getOtp = asyncHandler(async(req,res) => {
             pass: process.env.EMAIL_PASSWORD
         }
     });
-
+    
     const mailOptions = {
         from: process.env.EMAIL_USERNAME,
         to: email,
         subject: 'Password Reset OTP',
         text: `Your OTP is ${otp}`
     };
-
+    
     transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
-            return res.status(500).json(new ApiResponse(500, "Failed to send OTP"));
+            // Send the error response and exit
+            return res.status(500).json({ status: 500, message: "Failed to send OTP" });
         }
+    
+        // Send success response
+        return res.status(200).json({ status: 200, message: "OTP sent successfully" });
     });
+    
 
     res.status(200).json(new ApiResponse(200, `OTP sent to ${email}`));
 });
