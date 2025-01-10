@@ -7,6 +7,7 @@ import { SocketProvider } from './components/context/SocketContext.tsx';
 import { PeerProvider } from './components/context/PeerContext.tsx';
 import './App.css';
 import { useEffect } from 'react';
+import { Toaster } from './components/ui/toaster.tsx';
 
 function AppRoutes() {
   const { user } = useAuth();
@@ -30,6 +31,7 @@ function App() {
         <PeerProvider>
           <BrowserRouter>
             <AppRoutes />
+            <Toaster />
           </BrowserRouter>
         </PeerProvider>
       </SocketProvider>

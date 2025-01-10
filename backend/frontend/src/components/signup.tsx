@@ -5,12 +5,13 @@ import { Label } from "@/components/ui/label"
 import { ChevronRight } from 'lucide-react'
 import logo from "@/assets/logo.jpg";
 import axios from 'axios'
-import { toast } from 'sonner'
+import { useToast } from '@/hooks/use-toast'
 import Cookies from 'js-cookie'
 import { useNavigate } from 'react-router-dom'
 
 export default function SignUpPage() {
     const navigate = useNavigate();
+    const {toast} = useToast();
     
     useEffect(() => {
         const token = Cookies.get('token');
@@ -25,9 +26,6 @@ export default function SignUpPage() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        const toastId = toast.loading(
-            "Please wait while we sign-up you in...",
-        );
 
         const data = { 'username': username, 'password': password, 'email': email }
         // console.log(data);
@@ -38,7 +36,11 @@ export default function SignUpPage() {
                 .then((res) => {
                     console.log(res);
                     if (res.data.success) {
-                        toast.success("Signed-Up in successfully", { id: toastId });
+                        toast({
+                            title: 'Signup Successful',
+                            description: 'You have successfully signed up',
+                            className: 'bg-green-500 text-white',
+                        })
                         const token = res.data.token;
                         Cookies.set('token', token, { expires: 7, secure: true });
                         Cookies.set('user', res.data.user._id, { expires: 7, secure: true });
@@ -46,11 +48,21 @@ export default function SignUpPage() {
                     }
                 })
                 .catch((error) => {
+                    toast({
+                        title: 'Signup Failed',
+                        description: 'Failed to signup',
+                        className: 'bg-red-500 text-white',
+                        variant: 'destructive',
+                    })
                     console.log(error);
-                    toast.error("Error in signing in. Please try again later.", { id: toastId });
                 })
         } catch (error) {
-            toast.error("Error in signing in. Please try again later.", { id: toastId });
+            toast({
+                title: 'Signup Failed',
+                description: 'Failed to signup',
+                className: 'bg-red-500 text-white',
+                variant: 'destructive',
+            })
         }
 
     }

@@ -219,6 +219,7 @@ const resetPassword = asyncHandler(async(req,res) => {
     }
 
     user.password = newPassword;
+    user.resetPasswordToken = null;
 
     await user.save();
 

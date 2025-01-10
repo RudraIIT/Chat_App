@@ -18,11 +18,13 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useState } from "react"
 import axios from "axios"
+import { useToast } from "@/hooks/use-toast"
 
 export function getOtp() {
   const [email, setEmail] = useState("")
   const [newPassword, setNewPassword] = useState("")
   const [value, setValue] = useState("")
+  const {toast} = useToast()
 
   const sendOtp = async() => {
     try {
@@ -34,10 +36,21 @@ export function getOtp() {
 
       if (response.data.statusCode === 200) {
         console.log("OTP sent successfully");
+        toast({
+          title:"OTP Sent",
+          description:"OTP sent to your email",
+          className: "bg-green-500 text-white"
+        })
       }
 
     } catch (error) {
       console.log(error);
+      toast({
+        title:"OTP Not Sent",
+        description:"Failed to send OTP",
+        className: "bg-red-500 text-white",
+        variant: "destructive"
+      })
     }
   }
 
@@ -53,11 +66,21 @@ export function getOtp() {
 
       if (response.data.statusCode === 200) {
         console.log("OTP verified successfully");
-        alert("Password changed successfully");
+        toast({
+          title:"Password Reset",
+          description:"Password reset successfully",
+          className: "bg-green-500 text-white"
+        })
       }
 
     } catch (error) {
       console.log(error);
+      toast({
+        title:"Password Reset",
+        description:"Failed to reset password",
+        className: "bg-red-500 text-white",
+        variant: "destructive"
+      })
     }
   }
 

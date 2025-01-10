@@ -5,11 +5,11 @@ import { Label } from '@/components/ui/label';
 import { ChevronRight } from 'lucide-react';
 import logo from '@/assets/logo.jpg';
 import axios from 'axios';
-import { toast } from 'sonner';
 import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
 import { getOtp } from './get-otp';
+import { useToast } from '@/hooks/use-toast';
 
 export default function LoginPage() {
     const navigate = useNavigate();
@@ -17,6 +17,7 @@ export default function LoginPage() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [email, setEmail] = useState('');
+    const {toast } = useToast();
 
     useEffect(() => {
         const token = Cookies.get('token');
@@ -28,7 +29,6 @@ export default function LoginPage() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        const toastId = toast.loading('Please wait while we log you in...');
         const data = { username, password, email };
 
         try {
@@ -36,7 +36,12 @@ export default function LoginPage() {
                 withCredentials: true,
             });
             if (res.data.success) {
-                toast.success('Logged in successfully', { id: toastId });
+                toast({
+                    title: 'Login Successful',
+                    description: 'You have successfully logged in',
+                    className: 'bg-green-500 text-white',
+                })
+
                 const { token, user } = res.data;
                 Cookies.set('token', token, { expires: 7, secure: true });
                 Cookies.set('user', user._id, { expires: 7, secure: true });
@@ -44,11 +49,22 @@ export default function LoginPage() {
                 setUser(user);
                 navigate('/', { replace: true });
             } else {
-                toast.error('Login failed. Please try again.', { id: toastId });
+                toast({
+                    title: 'Login Failed',
+                    description: 'Failed to login',
+                    className: 'bg-red-500 text-white',
+                    variant: 'destructive',
+                })
             }
         } catch (error) {
+
+            toast({
+                title: 'Login Failed',
+                description: 'Failed to login',
+                className: 'bg-red-500 text-white',
+                variant: 'destructive',
+            })
             console.error(error);
-            toast.error('Error in logging in. Please try again later.', { id: toastId });
         }
     };
 

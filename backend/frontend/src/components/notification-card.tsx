@@ -12,9 +12,11 @@ import { Switch } from "@/components/ui/switch";
 import { useEffect, useState } from "react";
 import useGetNotifications from "./context/useGetNotifications.ts";
 import axios from "axios";
+import { useToast } from "@/hooks/use-toast.ts";
 
 export function NotificationCard() {
     const [notifications, setNotifications] = useState([]);
+    const {toast} = useToast();
 
     useGetNotifications(setNotifications);
 
@@ -45,6 +47,12 @@ export function NotificationCard() {
             setNotifications((prev) =>
                 prev.filter((notification: any) => notification._id !== friendId)
             );
+
+            toast({
+                title: "Friend Request Accepted",
+                description: "You have accepted the friend request",
+                className: "bg-green-500 text-white",
+            })
         } catch (error) {
             console.error("Error accepting request:", error);
         }

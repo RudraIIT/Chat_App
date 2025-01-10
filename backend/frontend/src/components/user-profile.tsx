@@ -13,6 +13,7 @@ import { Label } from "@/components/ui/label";
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import axios from "axios";
+import { useToast } from "@/hooks/use-toast";
 
 interface User {
     _id: string;
@@ -30,6 +31,7 @@ export function UserProfileCard() {
     const [user, setUser] = useState<User | null>(null); 
     const [friendEmail, setFriendEmail] = useState("");
     const userId = Cookies.get("user");
+    const {toast} = useToast();
 
     useEffect(() => {
         const getUser = async () => {
@@ -52,8 +54,19 @@ export function UserProfileCard() {
                 withCredentials: true,
             });
             console.log(response);
+            toast({
+                title: "Friend Request Sent",
+                description: "You have sent a friend request",
+                className: "bg-green-500 text-white",
+            })
         } catch (error) {
             console.error("Error sending friend request:", error);
+            toast({
+                title: "Friend Request Not Sent",
+                description: "Failed to send friend request",
+                className: "bg-red-500 text-white",
+                variant: "destructive",
+            })
         }
     };
 
