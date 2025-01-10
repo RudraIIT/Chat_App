@@ -47,6 +47,8 @@ export function getOtp() {
         email:email,
         otp:value,
         newPassword:newPassword
+      },{
+        withCredentials:true
       });
 
       if (response.data.status === 200) {
@@ -80,7 +82,7 @@ export function getOtp() {
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="password" className="text-right">
-              New Password
+              Password
             </Label>
             <Input id="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} className="col-span-3" />
           </div>
