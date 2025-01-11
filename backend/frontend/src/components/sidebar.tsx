@@ -1,6 +1,7 @@
 import { Search, LogOut, Bell } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import ChatList from './chat-list';
+import logo from '@/assets/profile-pic.jpg';
 import { handleLogout, useAuth } from './context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { NotificationCard } from './notification-card';
@@ -22,7 +23,6 @@ export default function Sidebar({ onSelectUser }: SidebarProps) {
   const [showProfile, setShowProfile] = useState<boolean>(false);
   const { setUser } = useAuth();
   const notificationRef = useRef<HTMLDivElement | null>(null);
-  // const userRef = useRef<HTMLDivElement | null>(null);use ref
 
   useEffect(() => {
     // console.log("Notification:", notification);
@@ -73,23 +73,11 @@ export default function Sidebar({ onSelectUser }: SidebarProps) {
     setShowProfile(!showProfile);
   }
 
-  // useEffect(() => {
-  //   if (showNotification && notificationRef.current) {
-  //     notificationRef.current.classList.add("animate-slideDown");
-  //   }
-  // }, [showNotification]);
-
-  // useEffect(() => {
-  //   if (showProfile && userRef.current) {
-  //     userRef.current.classList.add("animate-slideDown");
-  //   }
-  // }, [showProfile]);
-
   return (
     <div className="w-full sm:w-80 flex-shrink-0 border-r border-gray-300 bg-white">
       <div className="h-16 flex items-center justify-between px-4 bg-gray-200">
         <button onClick={handleUserProfile} className='hover:bg-gray-300 rounded-full p-1'>
-          {/* <img src={logo} alt="Profile" className="w-10 h-10 rounded-full" /> */}
+          <img src={logo} alt="Profile" className="w-10 h-10 rounded-full" />
         </button>
         <div className="flex space-x-4">
           <button className="relative" onClick={handleBellClick}>
