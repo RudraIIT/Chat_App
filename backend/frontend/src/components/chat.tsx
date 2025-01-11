@@ -16,7 +16,7 @@ export default function WhatsAppLayout() {
   }
 
   return (
-    <div className="flex h-[100svh] bg-gray-100 overflow-y-auto">
+    <div className="flex h-[100svh] bg-gray-100 overflow-hidden">
       {/* Desktop Sidebar */}
       <div className="hidden md:flex w-[320px] border-r bg-background">
         <Sidebar onSelectUser={handleUserSelect} />
