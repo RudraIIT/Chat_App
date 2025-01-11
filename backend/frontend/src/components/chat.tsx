@@ -16,7 +16,7 @@ export default function WhatsAppLayout() {
   }
 
   return (
-    <div className="flex h-[100svh] bg-gray-100 overflow-hidden">
+    <div className="flex h-[100svh] bg-gray-100 overflow-y-auto">
       {/* Desktop Sidebar */}
       <div className="hidden md:flex w-[320px] border-r bg-background">
         <Sidebar onSelectUser={handleUserSelect} />
@@ -49,7 +49,7 @@ export default function WhatsAppLayout() {
             Select a chat to start messaging
           </div>
         ) : (
-          <div className="flex-1 flex flex-col h-[calc(100vh-3.5rem)] md:h-screen">
+          <div className="flex-1 flex flex-col h-[calc(100vh-3.5rem)] md:h-screen overflow-y-auto">
             <ChatArea selectedUser={selectedUserId} />
           </div>
         )}
