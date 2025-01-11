@@ -5,6 +5,7 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -12,6 +13,7 @@ import { useEffect, useState } from "react"
 import Cookies from "js-cookie"
 import axios from "axios"
 import { useToast } from "@/hooks/use-toast"
+import { User } from 'lucide-react'
 import logo from "@/assets/profile-pic.jpg"
 
 interface User {
@@ -26,15 +28,10 @@ interface User {
   updatedAt: string
 }
 
-interface UserProfileDialogProps {
-  open: boolean
-  onOpenChange: (open: boolean) => void
-  trigger: React.ReactNode
-}
-
-export function UserProfileDialog({ open, onOpenChange, trigger }: UserProfileDialogProps) {
+export function UserCard() {
   const [user, setUser] = useState<User | null>(null)
   const [friendEmail, setFriendEmail] = useState("")
+  const [isOpen, setIsOpen] = useState(false)
   const userId = Cookies.get("user")
   const { toast } = useToast()
 
@@ -52,8 +49,8 @@ export function UserProfileDialog({ open, onOpenChange, trigger }: UserProfileDi
         console.error("Error fetching user:", error)
       }
     }
-    if (userId && open) getUser()
-  }, [userId, open])
+    if (userId && isOpen) getUser()
+  }, [userId, isOpen])
 
   const handleSendRequest = async () => {
     const data = { senderId: userId, receiverEmail: friendEmail }
@@ -71,7 +68,7 @@ export function UserProfileDialog({ open, onOpenChange, trigger }: UserProfileDi
         description: "You have sent a friend request",
         className: "bg-green-500 text-white",
       })
-      setFriendEmail("") // Clear the input after successful request
+      setFriendEmail("") 
     } catch (error) {
       toast({
         title: "Error",
@@ -84,8 +81,7 @@ export function UserProfileDialog({ open, onOpenChange, trigger }: UserProfileDi
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      {trigger}
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>User Profile</DialogTitle>
@@ -98,6 +94,7 @@ export function UserProfileDialog({ open, onOpenChange, trigger }: UserProfileDi
         ) : (
           <>
             <div className="grid gap-4 py-4">
+              {/* Avatar */}
               <div className="flex justify-center">
                 <img
                   src={user.avatar || logo}
@@ -106,6 +103,7 @@ export function UserProfileDialog({ open, onOpenChange, trigger }: UserProfileDi
                 />
               </div>
 
+              {/* Username */}
               <div className="grid gap-2">
                 <Label htmlFor="username">Username</Label>
                 <Input
@@ -116,6 +114,7 @@ export function UserProfileDialog({ open, onOpenChange, trigger }: UserProfileDi
                 />
               </div>
 
+              {/* Email */}
               <div className="grid gap-2">
                 <Label htmlFor="email">Email</Label>
                 <Input
@@ -126,6 +125,7 @@ export function UserProfileDialog({ open, onOpenChange, trigger }: UserProfileDi
                 />
               </div>
 
+              {/* Friend Requests */}
               <div className="grid gap-2">
                 <Label htmlFor="friendRequests">Friend Requests</Label>
                 <Input
@@ -136,6 +136,7 @@ export function UserProfileDialog({ open, onOpenChange, trigger }: UserProfileDi
                 />
               </div>
 
+              {/* Send Friend Request */}
               <div className="grid gap-2">
                 <Label htmlFor="sendFriendRequest">Friend&apos;s Email</Label>
                 <div className="flex gap-2">
@@ -151,7 +152,7 @@ export function UserProfileDialog({ open, onOpenChange, trigger }: UserProfileDi
             </div>
 
             <div className="flex justify-between">
-              <Button variant="outline" onClick={() => onOpenChange(false)}>
+              <Button variant="outline" onClick={() => setIsOpen(false)}>
                 Close
               </Button>
               <Button variant="outline">Edit Profile</Button>

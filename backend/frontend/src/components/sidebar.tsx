@@ -1,31 +1,32 @@
-import { Search, LogOut, Bell } from 'lucide-react'
-import { useEffect, useRef, useState } from 'react'
-import ChatList from './chat-list'
-import logo from '@/assets/profile-pic.jpg'
-import { handleLogout, useAuth } from './context/AuthContext'
-import { useNavigate } from 'react-router-dom'
-import { NotificationCard } from './notification-card'
-import { UserProfileDialog } from './user-card'
-import useGetNotifications from './context/useGetNotifications'
-import axios from 'axios'
+import { Search, LogOut, Bell } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import ChatList from './chat-list';
+import logo from '@/assets/profile-pic.jpg';
+import { handleLogout, useAuth } from './context/AuthContext';
+import { useNavigate } from 'react-router-dom';
+import { NotificationCard } from './notification-card';
+import { UserCard } from './user-card';
+import useGetNotifications from './context/useGetNotifications';
+import axios from 'axios';
 
 interface SidebarProps {
-  onSelectUser: (userId: string) => void
+  onSelectUser: (userId: string) => void;
 }
 
 export default function Sidebar({ onSelectUser }: SidebarProps) {
-  const navigate = useNavigate()
-  const [searchQuery, setSearchQuery] = useState<string>('')
-  const [notification, setNotification] = useState([])
-  useGetNotifications(setNotification)
-  const [notificationCount, setNotificationCount] = useState<number>(notification.length)
-  const [showNotification, setShowNotification] = useState<boolean>(false)
-  const [isProfileOpen, setIsProfileOpen] = useState<boolean>(false)
-  const { setUser } = useAuth()
-  const notificationRef = useRef<HTMLDivElement | null>(null)
+  const navigate = useNavigate();
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [notification, setNotification] = useState([]);
+  useGetNotifications(setNotification);
+  const [notificationCount, setNotificationCount] = useState<number>(notification.length);
+  const [showNotification, setShowNotification] = useState<boolean>(false);
+  const [showProfile, setShowProfile] = useState<boolean>(false);
+  const { setUser } = useAuth();
+  const notificationRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    setNotificationCount(notification.length)
+    // console.log("Notification:", notification);
+    setNotificationCount(notification.length);
   }, [notification])
 
   useEffect(() => {
@@ -33,48 +34,51 @@ export default function Sidebar({ onSelectUser }: SidebarProps) {
       try {
         const response = await axios.get("https://chat-app-zegp.onrender.com/api/users/getRequest", {
           withCredentials: true,
-        })
-        setNotification(response.data.friendRequests || [])
+        });
+
+        setNotification(response.data.friendRequests || []);
       } catch (error) {
-        console.error("Error fetching notifications:", error)
+        console.error("Error fetching notifications:", error);
       }
-    }
-    fetchNotifications()
-  }, [])
+    };
+
+    fetchNotifications();
+  }, []);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value)
-  }
+    setSearchQuery(e.target.value);
+  };
 
   const handleLogoutFunction = async () => {
     try {
-      await handleLogout(setUser)
-      navigate('/login')
+      await handleLogout(setUser);
+      navigate('/login');
     } catch (error) {
-      console.log("Logout failed:", error)
+      console.log("Logout failed:", error);
     }
   }
 
   const handleBellClick = () => {
-    setNotificationCount(0)
+    setNotificationCount(0);
     if (!showNotification) {
-      setIsProfileOpen(false)
+      setShowProfile(false);
     }
-    setShowNotification(!showNotification)
+    setShowNotification(!showNotification);
+  }
+
+  const handleUserProfile = () => {
+    if (!showProfile) {
+      setShowNotification(false);
+    }
+    setShowProfile(!showProfile);
   }
 
   return (
     <div className="w-full sm:w-80 flex-shrink-0 border-r border-gray-300 bg-white">
       <div className="h-16 flex items-center justify-between px-4 bg-gray-200">
-        <UserProfileDialog 
-          open={isProfileOpen} 
-          onOpenChange={setIsProfileOpen}
-          trigger={
-            <button className='hover:bg-gray-300 rounded-full p-1'>
-              <img src={logo} alt="Profile" className="w-10 h-10 rounded-full" />
-            </button>
-          }
-        />
+        <button onClick={handleUserProfile} className='hover:bg-gray-300 rounded-full p-1'>
+          <img src={logo} alt="Profile" className="w-10 h-10 rounded-full" />
+        </button>
         <div className="flex space-x-4">
           <button className="relative" onClick={handleBellClick}>
             <Bell className="h-6 w-6 text-gray-600 hover:text-gray-900" />
@@ -102,6 +106,7 @@ export default function Sidebar({ onSelectUser }: SidebarProps) {
         </div>
       </div>
 
+      {/* Show the `NotificationCard` if `showNotification` is true */}
       {showNotification && (
         <div
           ref={notificationRef}
@@ -109,10 +114,17 @@ export default function Sidebar({ onSelectUser }: SidebarProps) {
         >
           <NotificationCard />
         </div>
-      )}
+      )
+      }
 
+      {
+        showProfile && (
+            <UserCard />
+        )
+      }
+
+      {/* Pass the `onSelectUser` callback to the `ChatList` */}
       <ChatList searchQuery={searchQuery} onSelectUser={onSelectUser} />
     </div>
-  )
+  );
 }
-
