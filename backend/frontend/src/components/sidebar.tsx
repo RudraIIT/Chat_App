@@ -23,7 +23,7 @@ export default function Sidebar({ onSelectUser }: SidebarProps) {
   const [showProfile, setShowProfile] = useState<boolean>(false);
   const { setUser } = useAuth();
   const notificationRef = useRef<HTMLDivElement | null>(null);
-  const userRef = useRef<HTMLDivElement | null>(null);
+  // const userRef = useRef<HTMLDivElement | null>(null);use ref
 
   useEffect(() => {
     // console.log("Notification:", notification);
