@@ -65,12 +65,20 @@ export function UserCard({ isOpen, setIsOpen }: UserCardProps) {
           withCredentials: true,
         }
       )
-      console.log(response)
-      toast({
-        title: "Friend Request Sent",
-        description: "You have sent a friend request",
-        className: "bg-green-500 text-white",
-      })
+      if(response.data.statusCode === 200) {
+        toast({
+          title: "Friend Request Sent",
+          description: "You have sent a friend request",
+          className: "bg-green-500 text-white",
+        })
+        } else { 
+            toast({
+                title: "Friend Request Not Sent",
+                description: "Failed to send friend request",
+                className: "bg-red-500 text-white",
+                variant: "destructive",
+            })
+        }
       setFriendEmail("")
     } catch (error) {
       toast({
