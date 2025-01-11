@@ -16,7 +16,7 @@ export default function WhatsAppLayout() {
   }
 
   return (
-    <div className="h-[100svh] bg-gray-100 overflow-hidden">
+    <div className="flex h-[100svh] bg-gray-100 overflow-hidden">
       {/* Desktop Sidebar */}
       <div className="hidden md:flex w-[320px] border-r bg-background">
         <Sidebar onSelectUser={handleUserSelect} />
@@ -30,7 +30,7 @@ export default function WhatsAppLayout() {
       </Sheet>
 
       {/* Main Chat Area */}
-      <div className="flex-1 flex flex-col h-full">
+      <div className="flex-1 flex flex-col">
         <div className="md:hidden flex items-center h-14 px-4 border-b bg-background">
           <Button
             variant="ghost"
