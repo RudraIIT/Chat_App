@@ -22,7 +22,7 @@ const isAuthenticatedUser = async (req, res, next) => {
 
 const limiter = rateLimit({
     windowMs: 5 * 60 * 1000, 
-    max: 100,
+    max: 1,
     message: "Too many requests from this IP, please try again after 5 minutes",
 })
 
