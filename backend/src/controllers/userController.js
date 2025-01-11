@@ -88,6 +88,14 @@ const sendFriendRequest = asyncHandler(async (req, res) => {
         return res.json(new ApiError(404, 'User not found'));
     }
 
+    if(receiverId._id.toString() === senderId) {
+        return res.json(new ApiError(400, 'You cannot send friend request to yourself'));
+    }
+
+    if(receiverId.friends.includes(senderId)) {
+        return res.json(new ApiError(400, 'You are already friends'));
+    }
+
     receiverId.friendRequests.push(senderId);
 
     await receiverId.save();
