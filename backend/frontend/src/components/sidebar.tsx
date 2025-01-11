@@ -1,6 +1,7 @@
-import { Search, LogOut, Bell } from 'lucide-react';
+import { Search, LogOut, Bell} from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import ChatList from './chat-list';
+import logo from '@/assets/profile-pic.jpg';
 import { handleLogout, useAuth } from './context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { NotificationCard } from './notification-card';
@@ -76,7 +77,7 @@ export default function Sidebar({ onSelectUser }: SidebarProps) {
     <div className="w-full sm:w-80 flex-shrink-0 border-r border-gray-300 bg-white">
       <div className="h-16 flex items-center justify-between px-4 bg-gray-200">
         <button onClick={handleUserProfile} className='hover:bg-gray-300 rounded-full p-1'>
-          <UserCard isOpen={showProfile} setIsOpen={setShowProfile} />
+          <img src={logo} alt="Profile" className="w-10 h-10 rounded-full" />
         </button>
         <div className="flex space-x-4">
           <button className="relative" onClick={handleBellClick}>
@@ -114,6 +115,10 @@ export default function Sidebar({ onSelectUser }: SidebarProps) {
           <NotificationCard />
         </div>
       )
+      } {
+        showProfile && (
+          <UserCard isOpen={showProfile} setIsOpen={setShowProfile} />
+        )
       }
 
       {/* Pass the `onSelectUser` callback to the `ChatList` */}
