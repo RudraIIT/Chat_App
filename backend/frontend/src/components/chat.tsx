@@ -12,7 +12,8 @@ export default function WhatsAppLayout() {
   }
 
   return (
-    <div className="flex h-screen bg-gray-100">
+    // mobile layout
+    <div className="flex flex-col h-screen bg-gray-100 overflow-hidden sm:hidden">
       <Sidebar onSelectUser={handleUserSelect}/>
       <ChatArea selectedUser={selectedUserId}/>
     </div>
