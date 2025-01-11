@@ -1,5 +1,5 @@
 import { Search, LogOut, Bell} from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import ChatList from './chat-list';
 import logo from '@/assets/profile-pic.jpg';
 import { handleLogout, useAuth } from './context/AuthContext';
@@ -22,7 +22,6 @@ export default function Sidebar({ onSelectUser }: SidebarProps) {
   const [showNotification, setShowNotification] = useState<boolean>(false);
   const [showProfile, setShowProfile] = useState<boolean>(false);
   const { setUser } = useAuth();
-  const notificationRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     // console.log("Notification:", notification);
@@ -108,12 +107,7 @@ export default function Sidebar({ onSelectUser }: SidebarProps) {
 
       {/* Show the `NotificationCard` if `showNotification` is true */}
       {showNotification && (
-        <div
-          ref={notificationRef}
-          className="fixed top-10 left-0 w-full max-w-md mx-auto mt-4 p-4 bg-white shadow-lg rounded transform transition-transform duration-500 ease-in-out"
-        >
-          <NotificationCard />
-        </div>
+          <NotificationCard open={showNotification} onOpenChange={setShowNotification} />
       )
       } {
         showProfile && (

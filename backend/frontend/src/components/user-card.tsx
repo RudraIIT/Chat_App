@@ -85,18 +85,18 @@ export function UserCard({ isOpen, setIsOpen }: UserCardProps) {
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px] text-green-500">
         <DialogHeader>
           <DialogTitle>User Profile</DialogTitle>
           <DialogDescription>Manage your profile information.</DialogDescription>
         </DialogHeader>
         {!user ? (
-          <div className="flex items-center justify-center p-4">
+          <div className="flex items-center justify-center p-4 text-green-500">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900" />
           </div>
         ) : (
           <>
-            <div className="grid gap-4 py-4">
+            <div className="grid gap-4 py-4 text-green-500">
               {/* Avatar */}
               <div className="flex justify-center">
                 <img
