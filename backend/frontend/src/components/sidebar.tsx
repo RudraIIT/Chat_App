@@ -132,12 +132,7 @@ export default function Sidebar({ onSelectUser }: SidebarProps) {
 
       {
         showProfile && (
-          <div
-            ref={userRef}
-            className="bg-white transform transition-transform duration-500 ease-in-out"
-          >
             <UserCard />
-          </div>
         )
       }
 

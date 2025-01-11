@@ -68,7 +68,7 @@ export function UserCard() {
         description: "You have sent a friend request",
         className: "bg-green-500 text-white",
       })
-      setFriendEmail("") // Clear the input after successful request
+      setFriendEmail("") 
     } catch (error) {
       toast({
         title: "Error",
