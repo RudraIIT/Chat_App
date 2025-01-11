@@ -239,7 +239,7 @@ export default function ChatArea({ selectedUser }: ChatAreaProps) {
 
 
   return (
-    <div className="flex-1 flex flex-col md:flex-row">
+    <div className="flex-1 flex">
       {!isInCall && (
         <div className={`flex-1 flex flex-col ${showProfile ? "w-3/4" : "w-full"}`}>
           {/* Chat Header */}
