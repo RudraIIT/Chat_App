@@ -30,8 +30,7 @@ export default function WhatsAppLayout() {
       </Sheet>
 
       {/* Main Chat Area */}
-      <div className="flex-1 flex flex-col">
-        {/* Mobile Header */}
+      <div className="flex-1 flex flex-col h-full">
         <div className="md:hidden flex items-center h-14 px-4 border-b bg-background">
           <Button
             variant="ghost"
@@ -48,7 +47,7 @@ export default function WhatsAppLayout() {
         </div>
 
         {/* Chat Area */}
-        <div className="flex-1">
+        <div className="flex-1 h-full overflow-y-auto">
           {!selectedUserId && !isMobileMenuOpen ? (
             <div className="flex h-full items-center justify-center text-muted-foreground">
               Select a chat to start messaging
