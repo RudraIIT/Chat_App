@@ -28,8 +28,8 @@ interface User {
 }
 
 interface UserCardProps {
-    isOpen: boolean
-    setIsOpen: (isOpen: boolean) => void
+  isOpen: boolean
+  setIsOpen: (isOpen: boolean) => void
 }
 
 export function UserCard({ isOpen, setIsOpen }: UserCardProps) {
@@ -71,7 +71,7 @@ export function UserCard({ isOpen, setIsOpen }: UserCardProps) {
         description: "You have sent a friend request",
         className: "bg-green-500 text-white",
       })
-      setFriendEmail("") 
+      setFriendEmail("")
     } catch (error) {
       toast({
         title: "Error",
@@ -85,80 +85,97 @@ export function UserCard({ isOpen, setIsOpen }: UserCardProps) {
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogContent className="sm:max-w-[425px] text-green-500">
+      <DialogContent className="sm:max-w-[425px] bg-green-50">
         <DialogHeader>
-          <DialogTitle>User Profile</DialogTitle>
-          <DialogDescription>Manage your profile information.</DialogDescription>
+          <DialogTitle className="text-green-700">User Profile</DialogTitle>
+          <DialogDescription className="text-green-600">
+            Manage your profile information.
+          </DialogDescription>
         </DialogHeader>
         {!user ? (
-          <div className="flex items-center justify-center p-4 text-green-500">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900" />
+          <div className="flex items-center justify-center p-4">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600" />
           </div>
         ) : (
           <>
-            <div className="grid gap-4 py-4 text-green-500">
+            <div className="grid gap-4 py-4">
               {/* Avatar */}
               <div className="flex justify-center">
                 <img
                   src={user.avatar || logo}
                   alt={`${user.username}'s avatar`}
-                  className="h-20 w-20 rounded-full border border-gray-300"
+                  className="h-20 w-20 rounded-full border-2 border-green-500"
                 />
               </div>
 
               {/* Username */}
               <div className="grid gap-2">
-                <Label htmlFor="username">Username</Label>
+                <Label htmlFor="username" className="text-green-700">Username</Label>
                 <Input
                   id="username"
                   value={user.username}
                   readOnly
-                  className="cursor-not-allowed"
+                  className="cursor-not-allowed bg-green-50 border-green-200 text-green-700"
                 />
               </div>
 
               {/* Email */}
               <div className="grid gap-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email" className="text-green-700">Email</Label>
                 <Input
                   id="email"
                   value={user.email}
                   readOnly
-                  className="cursor-not-allowed"
+                  className="cursor-not-allowed bg-green-50 border-green-200 text-green-700"
                 />
               </div>
 
               {/* Friend Requests */}
               <div className="grid gap-2">
-                <Label htmlFor="friendRequests">Friend Requests</Label>
+                <Label htmlFor="friendRequests" className="text-green-700">Friend Requests</Label>
                 <Input
                   id="friendRequests"
                   value={user.friendRequests?.length}
                   readOnly
-                  className="cursor-not-allowed"
+                  className="cursor-not-allowed bg-green-50 border-green-200 text-green-700"
                 />
               </div>
 
               {/* Send Friend Request */}
               <div className="grid gap-2">
-                <Label htmlFor="sendFriendRequest">Friend&apos;s Email</Label>
+                <Label htmlFor="sendFriendRequest" className="text-green-700">Friend&apos;s Email</Label>
                 <div className="flex gap-2">
                   <Input
                     id="sendFriendRequest"
                     value={friendEmail}
                     onChange={(e) => setFriendEmail(e.target.value)}
                     placeholder="Enter friend's email"
+                    className="bg-white border-green-200 text-green-700 placeholder:text-green-400 focus-visible:ring-green-500"
                   />
-                  <Button onClick={handleSendRequest}>Send</Button>
+                  <Button 
+                    onClick={handleSendRequest}
+                    className="bg-green-500 text-white hover:bg-green-600 focus-visible:ring-green-500"
+                  >
+                    Send
+                  </Button>
                 </div>
               </div>
             </div>
 
             <div className="flex justify-between">
-              <Button variant="outline" onClick={() => setIsOpen(false)}>
+              <Button 
+                variant="outline" 
+                onClick={() => setIsOpen(false)}
+                className="border-green-500 text-green-700 hover:bg-green-50"
+              >
                 Close
               </Button>
-              <Button variant="outline">Edit Profile</Button>
+              <Button 
+                variant="outline"
+                className="border-green-500 text-green-700 hover:bg-green-50"
+              >
+                Edit Profile
+              </Button>
             </div>
           </>
         )}

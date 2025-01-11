@@ -69,27 +69,27 @@ export function NotificationCard({ open, onOpenChange }: NotificationDialogProps
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent className="bg-green-50">
         <DialogHeader>
-          <DialogTitle>Notifications</DialogTitle>
-          <DialogDescription>
+          <DialogTitle className="text-green-700">Notifications</DialogTitle>
+          <DialogDescription className="text-green-600">
             {notifications.length > 0
               ? `You have ${notifications.length} unread messages.`
               : "You have no new notifications."}
           </DialogDescription>
         </DialogHeader>
-        <div className="grid gap-4 text-green-500">
-          <div className="flex items-center space-x-4 rounded-md border p-4">
-            <BellRing className="h-5 w-5" />
+        <div className="grid gap-4">
+          <div className="flex items-center space-x-4 rounded-md border border-green-200 bg-white p-4">
+            <BellRing className="h-5 w-5 text-green-600" />
             <div className="flex-1 space-y-1">
-              <p className="text-sm font-medium leading-none">
+              <p className="text-sm font-medium leading-none text-green-700">
                 Push Notifications
               </p>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-green-600">
                 Send notifications to your device.
               </p>
             </div>
-            <Switch />
+            <Switch className="data-[state=checked]:bg-green-500" />
           </div>
           <div>
             {notifications.map((notification: any) => (
@@ -97,16 +97,16 @@ export function NotificationCard({ open, onOpenChange }: NotificationDialogProps
                 key={notification._id}
                 className="mb-4 grid grid-cols-[25px_1fr_auto] items-start pb-4 last:mb-0 last:pb-0"
               >
-                <span className="flex h-2 w-2 translate-y-1 rounded-full bg-sky-500" />
+                <span className="flex h-2 w-2 translate-y-1 rounded-full bg-green-500" />
                 <div className="space-y-1">
-                  <p className="text-sm font-medium leading-none">
+                  <p className="text-sm font-medium leading-none text-green-700">
                     {notification.username} sent you a friend request!
                   </p>
                 </div>
                 <Button
                   size="sm"
                   onClick={() => handleAcceptRequest(notification._id)}
-                  className="ml-4 text-green-500"
+                  className="ml-4 bg-green-500 text-white hover:bg-green-600 focus-visible:ring-green-500"
                 >
                   Accept
                 </Button>
@@ -116,7 +116,7 @@ export function NotificationCard({ open, onOpenChange }: NotificationDialogProps
         </div>
         <div className="mt-6">
           <Button
-            className="w-full text-green-500"
+            className="w-full border-green-500 text-green-700 hover:bg-green-50 focus-visible:ring-green-500"
             variant="outline"
             onClick={() => setNotifications([])}
           >
