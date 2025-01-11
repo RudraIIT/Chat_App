@@ -74,17 +74,17 @@ export default function Sidebar({ onSelectUser }: SidebarProps) {
     setShowProfile(!showProfile);
   }
 
-  useEffect(() => {
-    if (showNotification && notificationRef.current) {
-      notificationRef.current.classList.add("animate-slideDown");
-    }
-  }, [showNotification]);
+  // useEffect(() => {
+  //   if (showNotification && notificationRef.current) {
+  //     notificationRef.current.classList.add("animate-slideDown");
+  //   }
+  // }, [showNotification]);
 
-  useEffect(() => {
-    if (showProfile && userRef.current) {
-      userRef.current.classList.add("animate-slideDown");
-    }
-  }, [showProfile]);
+  // useEffect(() => {
+  //   if (showProfile && userRef.current) {
+  //     userRef.current.classList.add("animate-slideDown");
+  //   }
+  // }, [showProfile]);
 
   return (
     <div className="w-full sm:w-80 flex-shrink-0 border-r border-gray-300 bg-white">
