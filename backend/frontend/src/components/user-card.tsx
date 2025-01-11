@@ -27,10 +27,14 @@ interface User {
   updatedAt: string
 }
 
-export function UserCard() {
+interface UserCardProps {
+    isOpen: boolean
+    setIsOpen: (isOpen: boolean) => void
+}
+
+export function UserCard({ isOpen, setIsOpen }: UserCardProps) {
   const [user, setUser] = useState<User | null>(null)
   const [friendEmail, setFriendEmail] = useState("")
-  const [isOpen, setIsOpen] = useState(false)
   const userId = Cookies.get("user")
   const { toast } = useToast()
 
