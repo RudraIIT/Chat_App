@@ -5,7 +5,6 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -13,7 +12,6 @@ import { useEffect, useState } from "react"
 import Cookies from "js-cookie"
 import axios from "axios"
 import { useToast } from "@/hooks/use-toast"
-import { User } from 'lucide-react'
 import logo from "@/assets/profile-pic.jpg"
 
 interface User {
@@ -28,10 +26,15 @@ interface User {
   updatedAt: string
 }
 
-export function UserCard() {
+interface UserProfileDialogProps {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  trigger: React.ReactNode
+}
+
+export function UserProfileDialog({ open, onOpenChange, trigger }: UserProfileDialogProps) {
   const [user, setUser] = useState<User | null>(null)
   const [friendEmail, setFriendEmail] = useState("")
-  const [isOpen, setIsOpen] = useState(false)
   const userId = Cookies.get("user")
   const { toast } = useToast()
 
@@ -49,8 +52,8 @@ export function UserCard() {
         console.error("Error fetching user:", error)
       }
     }
-    if (userId && isOpen) getUser()
-  }, [userId, isOpen])
+    if (userId && open) getUser()
+  }, [userId, open])
 
   const handleSendRequest = async () => {
     const data = { senderId: userId, receiverEmail: friendEmail }
@@ -68,7 +71,7 @@ export function UserCard() {
         description: "You have sent a friend request",
         className: "bg-green-500 text-white",
       })
-      setFriendEmail("") 
+      setFriendEmail("") // Clear the input after successful request
     } catch (error) {
       toast({
         title: "Error",
@@ -81,13 +84,8 @@ export function UserCard() {
   }
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>
-        <Button variant="outline" size="icon">
-          <User className="h-4 w-4" />
-          <span className="sr-only">Open profile</span>
-        </Button>
-      </DialogTrigger>
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      {trigger}
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>User Profile</DialogTitle>
@@ -100,7 +98,6 @@ export function UserCard() {
         ) : (
           <>
             <div className="grid gap-4 py-4">
-              {/* Avatar */}
               <div className="flex justify-center">
                 <img
                   src={user.avatar || logo}
@@ -109,7 +106,6 @@ export function UserCard() {
                 />
               </div>
 
-              {/* Username */}
               <div className="grid gap-2">
                 <Label htmlFor="username">Username</Label>
                 <Input
@@ -120,7 +116,6 @@ export function UserCard() {
                 />
               </div>
 
-              {/* Email */}
               <div className="grid gap-2">
                 <Label htmlFor="email">Email</Label>
                 <Input
@@ -131,7 +126,6 @@ export function UserCard() {
                 />
               </div>
 
-              {/* Friend Requests */}
               <div className="grid gap-2">
                 <Label htmlFor="friendRequests">Friend Requests</Label>
                 <Input
@@ -142,7 +136,6 @@ export function UserCard() {
                 />
               </div>
 
-              {/* Send Friend Request */}
               <div className="grid gap-2">
                 <Label htmlFor="sendFriendRequest">Friend&apos;s Email</Label>
                 <div className="flex gap-2">
@@ -158,7 +151,7 @@ export function UserCard() {
             </div>
 
             <div className="flex justify-between">
-              <Button variant="outline" onClick={() => setIsOpen(false)}>
+              <Button variant="outline" onClick={() => onOpenChange(false)}>
                 Close
               </Button>
               <Button variant="outline">Edit Profile</Button>
