@@ -1,9 +1,8 @@
 import { registerUser } from '../controllers/userController.js';
-import { mockRequest, mockResponse } from 'jest-mock-req-res';
+import { mockRequest } from 'jest-mock-req-res';
 import User from '../models/userModel.js';
 import sendToken from '../utils/jwtToken.js';
 import crypto from 'crypto';
-import ApiError from '../utils/ApiError.js';
 
 jest.mock('../models/userModel.js');
 jest.mock('crypto');
